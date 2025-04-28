@@ -83,6 +83,20 @@ body {
     cursor: pointer;
 }
 
+.nav-item a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-item a:hover {
+    color: rgba(167, 139, 250, 1);
+}
+
+.nav-item.active a {
+    color: rgba(167, 139, 250, 1);
+}
+
 .nav-icon {
     width: 24px;
     height: 24px;
@@ -744,6 +758,16 @@ body {
     .process-step {
         margin: 5px 0;
     }
+
+    .voting-container {
+        padding: 20px;
+        min-height: 300px;
+        margin-top: 30px;
+    }
+    
+    .coming-soon {
+        font-size: 18px;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -838,4 +862,28 @@ body {
 /* Мобильное меню больше не нужно */
 .mobile-menu-button {
     display: none !important;
+}
+
+/* Стили для страницы голосования */
+.voting-container {
+    margin-top: 50px;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.coming-soon {
+    color: white;
+    font-size: 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    opacity: 0.7;
 } 
