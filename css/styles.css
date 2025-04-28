@@ -586,6 +586,8 @@ h1 {
 }
 
 @media (max-width: 768px) {
+    /* Удаляем изменение навигации для мобильных устройств */
+    /*
     nav {
         flex-direction: column;
         gap: 1.5rem;
@@ -594,6 +596,19 @@ h1 {
     .nav-links {
         flex-wrap: wrap;
         justify-content: center;
+    }
+    */
+    
+    /* Добавляем горизонтальную прокрутку для навбара */
+    nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 0.5rem 0;
+    }
+    
+    .nav-links {
+        flex-wrap: nowrap;
+        min-width: max-content;
     }
     
     h1 {
