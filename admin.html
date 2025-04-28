@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Админ-панель - Memeotica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Подключение Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Наши скрипты -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/voting-api.js"></script>
+    <style>
+        .admin-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0);
+            border-radius: 12px;
+            color: white;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .admin-container h1, 
+        .admin-container h2, 
+        .admin-container h3 {
+            text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #222;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .option-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .option-form {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #ff3366, #ff6633);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .voting-list {
+            margin-top: 2rem;
+        }
+        
+        .voting-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        
+        .voting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .voting-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .voting-end-time {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .voting-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .option-item {
+            flex: 1;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .option-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="voting-page-body">
+    <div class="frame">
+        <!-- Фоновые эффекты -->
+        <div class="bg-effect bg-effect-red"></div>
+        <div class="bg-effect bg-effect-green"></div>
+        
+        <!-- Навигация -->
+        <nav class="navbar">
+            <div class="navbar-items">
+                <div class="nav-item"><a href="index.html">Rules</a></div>
+                <div class="nav-item"><a href="index.html">Rewards</a></div>
+                <div class="nav-item"><a href="voting.html">Votings</a></div>
+                <div class="nav-item"><a href="index.html">Whitepaper</a></div>
+                <div class="nav-item"><a href="index.html">Roadmap</a></div>
+                <div class="nav-item"><a href="index.html">Leaderboard</a></div>
+                <div class="nav-icon">
+                    <img src="public/images/DS.png" alt="DS" class="icon-img">
+                </div>
+                <div class="nav-icon">
+                    <img src="img/twitter-x.svg" alt="Twitter X" class="icon-img">
+                </div>
+                <div class="nav-icon">
+                    <img src="public/images/fi-11823292.svg" alt="Telegram" class="icon-img">
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Основной контент -->
+        <div class="admin-container">
+            <h1>Управление голосованиями</h1>
+            
+            <div class="voting-form">
+                <h2>Создать новое голосование</h2>
+                
+                <div class="form-group">
+                    <label for="votingTitle">Заголовок голосования</label>
+                    <input type="text" id="votingTitle" class="form-control" placeholder="Например: Will Greenland join the USA?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="votingEndTime">Время окончания (в часах от текущего момента)</label>
+                    <input type="number" id="votingEndTime" class="form-control" placeholder="24" min="1" value="24">
+                </div>
+                
+                <div class="option-container">
+                    <div class="option-form">
+                        <h3>Опция "Нет"</h3>
+                        <div class="form-group">
+                            <label for="noOptionImage">URL изображения</label>
+                            <input type="text" id="noOptionImage" class="form-control" placeholder="URL изображения...">
+                        </div>
+                        <div class="form-group">
+                            <label for="noOptionLabel">Название токена</label>
+                            <input type="text" id="noOptionLabel" class="form-control" placeholder="Например: $FREEPENGU">
+                        </div>
+                    </div>
+                    
+                    <div class="option-form">
+                        <h3>Опция "Да"</h3>
+                        <div class="form-group">
+                            <label for="yesOptionImage">URL изображения</label>
+                            <input type="text" id="yesOptionImage" class="form-control" placeholder="URL изображения...">
+                        </div>
+                        <div class="form-group">
+                            <label for="yesOptionLabel">Название токена</label>
+                            <input type="text" id="yesOptionLabel" class="form-control" placeholder="Например: $GREENSTATE">
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="createVotingBtn" class="btn btn-primary">Создать голосование</button>
+            </div>
+            
+            <div class="voting-list">
+                <h2>Активные голосования</h2>
+                <div id="activeVotingsList"></div>
+            </div>
+        </div>
+        
+        <!-- Градиентный оверлей для нижней части -->
+        <!-- <div class="bottom-overlay"></div> -->
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Элементы формы
+        const votingTitleInput = document.getElementById('votingTitle');
+        const votingEndTimeInput = document.getElementById('votingEndTime');
+        const noOptionImageInput = document.getElementById('noOptionImage');
+        const noOptionLabelInput = document.getElementById('noOptionLabel');
+        const yesOptionImageInput = document.getElementById('yesOptionImage');
+        const yesOptionLabelInput = document.getElementById('yesOptionLabel');
+        const createVotingBtn = document.getElementById('createVotingBtn');
+        const activeVotingsList = document.getElementById('activeVotingsList');
+        
+        // Загрузка активных голосований
+        async function loadActiveVotings() {
+            try {
+                const now = new Date();
+                
+                const { data, error } = await supabaseClient
+                    .from('votings')
+                    .select('*')
+                    .gt('end_time', now.toISOString())
+                    .order('created_at', { ascending: false });
+                    
+                if (error) {
+                    console.error('Ошибка при загрузке голосований:', error);
+                    return;
+                }
+                
+                // Очищаем список
+                activeVotingsList.innerHTML = '';
+                
+                if (data.length === 0) {
+                    activeVotingsList.innerHTML = '<p>Нет активных голосований</p>';
+                    return;
+                }
+                
+                // Отображаем голосования
+                data.forEach(voting => {
+                    const endTime = new Date(voting.end_time);
+                    const formattedEndTime = endTime.toLocaleString();
+                    
+                    const votingItem = document.createElement('div');
+                    votingItem.className = 'voting-item';
+                    votingItem.innerHTML = `
+                        <div class="voting-header">
+                            <div class="voting-title">${voting.title}</div>
+                            <div class="voting-end-time">Окончание: ${formattedEndTime}</div>
+                        </div>
+                        <div class="voting-options">
+                            <div class="option-item">
+                                <img src="${voting.no_option_image_url}" alt="No option" class="option-image">
+                                <div>${voting.no_option_label}</div>
+                            </div>
+                            <div class="option-item">
+                                <img src="${voting.yes_option_image_url}" alt="Yes option" class="option-image">
+                                <div>${voting.yes_option_label}</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    activeVotingsList.appendChild(votingItem);
+                });
+            } catch (error) {
+                console.error('Ошибка при загрузке голосований:', error);
+            }
+        }
+        
+        // Обработчик создания голосования
+        createVotingBtn.addEventListener('click', async function() {
+            try {
+                // Валидация полей
+                if (!votingTitleInput.value || !votingEndTimeInput.value || 
+                    !noOptionImageInput.value || !noOptionLabelInput.value ||
+                    !yesOptionImageInput.value || !yesOptionLabelInput.value) {
+                    alert('Пожалуйста, заполните все поля');
+                    return;
+                }
+                
+                // Вычисляем время окончания
+                const endTime = new Date();
+                endTime.setHours(endTime.getHours() + parseInt(votingEndTimeInput.value));
+                
+                // Создаем голосование
+                const votingId = await votingAPI.createVoting(
+                    votingTitleInput.value,
+                    endTime,
+                    noOptionImageInput.value,
+                    noOptionLabelInput.value,
+                    yesOptionImageInput.value,
+                    yesOptionLabelInput.value
+                );
+                
+                if (votingId) {
+                    alert('Голосование успешно создано!');
+                    
+                    // Очищаем форму
+                    votingTitleInput.value = '';
+                    noOptionImageInput.value = '';
+                    noOptionLabelInput.value = '';
+                    yesOptionImageInput.value = '';
+                    yesOptionLabelInput.value = '';
+                    
+                    // Обновляем список
+                    await loadActiveVotings();
+                } else {
+                    alert('Не удалось создать голосование');
+                }
+            } catch (error) {
+                console.error('Ошибка при создании голосования:', error);
+                alert('Ошибка при создании голосования');
+            }
+        });
+        
+        // Загружаем голосования при загрузке страницы
+        await loadActiveVotings();
+    });
+    </script>
+</body>
+</html> 

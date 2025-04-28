@@ -6,6 +6,11 @@
     <title>Голосования - Memeotica</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Подключение Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Наши скрипты -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/voting-api.js"></script>
 </head>
 <body class="voting-page-body">
     <div class="frame voting-page">
@@ -114,20 +119,91 @@
     </div>
     
     <script>
-    // Таймер обратного отсчета
-    document.addEventListener('DOMContentLoaded', function() {
-        // Настройки таймера
-        const initialMinutes = 19;
-        const initialSeconds = 28;
-        const totalInitialSeconds = initialMinutes * 60 + initialSeconds;
-        let totalSeconds = totalInitialSeconds;
-        
-        // Элементы для анимации
+    // Инициализация страницы голосования
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Элементы UI
         const timerElement = document.getElementById('timer');
         const timerProgress = document.querySelector('.timer-progress');
         const timerDotIndicator = document.querySelector('.timer-dot-indicator');
+        const voteButtons = document.querySelectorAll('.vote-btn');
+        const noVotesElement = document.querySelector('.no-votes');
+        const yesVotesElement = document.querySelector('.yes-votes');
+        const redDotsLine = document.querySelector('.red-dots-line');
+        const greenDotsLine = document.querySelector('.green-dots-line');
+        const verticalSeparator = document.querySelector('.vertical-separator');
+        const votingTitleElement = document.querySelector('.voting-main-title');
+        const leftImageElement = document.querySelector('.left-card-placeholder img');
+        const rightImageElement = document.querySelector('.right-card-placeholder img');
+        const leftTokenLabel = document.querySelector('.image-with-label:first-child .token-label');
+        const rightTokenLabel = document.querySelector('.image-with-label:last-child .token-label');
         
-        function updateTimer() {
+        // Переменные для хранения данных текущего голосования
+        let currentVoting = null;
+        let totalSeconds = 0;
+        let totalInitialSeconds = 0;
+        let timerInterval = null;
+        
+        // Загрузка данных голосования
+        async function loadVotingData() {
+            try {
+                // Получаем текущее голосование
+                currentVoting = await votingAPI.getCurrentVoting();
+                
+                if (!currentVoting) {
+                    console.error('Активное голосование не найдено');
+                    return;
+                }
+                
+                // Устанавливаем заголовок
+                votingTitleElement.textContent = currentVoting.title;
+                
+                // Устанавливаем изображения и подписи
+                leftImageElement.src = currentVoting.no_option_image_url;
+                rightImageElement.src = currentVoting.yes_option_image_url;
+                leftTokenLabel.textContent = currentVoting.no_option_label;
+                rightTokenLabel.textContent = currentVoting.yes_option_label;
+                
+                // Настраиваем таймер
+                setupTimer(currentVoting.end_time);
+                
+                // Загружаем текущее количество голосов
+                await updateVoteCounts();
+                
+                // Настраиваем обработчики кнопок голосования
+                setupVoteButtons();
+            } catch (error) {
+                console.error('Ошибка при загрузке данных голосования:', error);
+            }
+        }
+        
+        // Настройка таймера
+        function setupTimer(endTimeStr) {
+            const now = new Date();
+            const endTime = new Date(endTimeStr);
+            
+            // Вычисляем оставшееся время в секундах
+            totalSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
+            totalInitialSeconds = totalSeconds;
+            
+            // Обновляем таймер сразу
+            updateTimerDisplay();
+            
+            // Запускаем таймер
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+        
+        // Обновление отображения таймера
+        function updateTimerDisplay() {
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                timerElement.textContent = "00:00:00";
+                
+                // По истечении таймера перезагружаем данные
+                setTimeout(loadVotingData, 3000);
+                return;
+            }
+            
             // Расчет времени
             const hours = Math.floor(totalSeconds / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -150,14 +226,14 @@
             const x = Math.sin(dotAngle);
             const y = -Math.cos(dotAngle);
             
-            // Устанавливаем точку на круге (делаем точку немного больше и выделяем её)
+            // Устанавливаем точку на круге
             const dotX = 50 + 48 * x;
             const dotY = 50 + 48 * y;
             
             // Перемещаем точку
             timerDotIndicator.style.left = `${dotX}%`;
             timerDotIndicator.style.top = `${dotY}%`;
-            timerDotIndicator.style.display = 'block'; // Гарантируем, что точка видна
+            timerDotIndicator.style.display = 'block';
             
             // Создаем clipping path для линии заполнения
             let clipPath;
@@ -174,15 +250,83 @@
             // Применяем стили для прогресса
             timerProgress.style.clipPath = clipPath;
             
-            if (totalSeconds > 0) {
-                totalSeconds--;
-                setTimeout(updateTimer, 1000);
-            } else {
-                timerElement.textContent = "00:00:00";
+            // Уменьшаем оставшееся время
+            totalSeconds--;
+        }
+        
+        // Обновление счетчиков голосов
+        async function updateVoteCounts() {
+            if (!currentVoting) return;
+            
+            try {
+                const counts = await votingAPI.getVoteCounts(currentVoting.voting_id);
+                
+                // Получаем количество голосов для каждой опции
+                const noVotes = counts.no || 0;
+                const yesVotes = counts.yes || 0;
+                
+                // Обновляем отображение
+                noVotesElement.textContent = noVotes;
+                yesVotesElement.textContent = yesVotes;
+                
+                // Обновляем прогресс-бар
+                const totalVotes = noVotes + yesVotes;
+                
+                if (totalVotes > 0) {
+                    const noVotesPercentage = (noVotes / totalVotes) * 100;
+                    const yesVotesPercentage = (yesVotes / totalVotes) * 100;
+                    
+                    // Обновляем размеры линий
+                    redDotsLine.style.width = `${noVotesPercentage}%`;
+                    greenDotsLine.style.width = `${yesVotesPercentage}%`;
+                    
+                    // Обновляем положение разделителя
+                    verticalSeparator.style.left = `${noVotesPercentage}%`;
+                }
+            } catch (error) {
+                console.error('Ошибка при обновлении счетчиков голосов:', error);
             }
         }
         
-        updateTimer();
+        // Настройка кнопок голосования
+        function setupVoteButtons() {
+            voteButtons.forEach(button => {
+                button.addEventListener('click', async function() {
+                    if (!currentVoting) return;
+                    
+                    try {
+                        let voted = false;
+                        
+                        if (this.classList.contains('vote-no')) {
+                            voted = await votingAPI.vote(currentVoting.voting_id, false);
+                        } else if (this.classList.contains('vote-yes')) {
+                            voted = await votingAPI.vote(currentVoting.voting_id, true);
+                        }
+                        
+                        if (voted) {
+                            // Анимация клика на кнопку
+                            this.classList.add('clicked');
+                            setTimeout(() => {
+                                this.classList.remove('clicked');
+                            }, 300);
+                            
+                            // Обновляем счетчики
+                            await updateVoteCounts();
+                        } else {
+                            console.warn('Не удалось проголосовать (возможно, вы уже голосовали)');
+                        }
+                    } catch (error) {
+                        console.error('Ошибка при голосовании:', error);
+                    }
+                });
+            });
+        }
+        
+        // Запускаем загрузку данных
+        loadVotingData();
+        
+        // Периодическое обновление данных
+        setInterval(updateVoteCounts, 10000);
     });
     </script>
     
