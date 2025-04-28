@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Голосования - Memeotica</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="frame">
+    <div class="frame voting-page">
+        <!-- Фоновые эффекты -->
+        <div class="bg-effect bg-effect-red"></div>
+        <div class="bg-effect bg-effect-green"></div>
+        
+        <!-- Навигация -->
         <nav class="navbar">
             <div class="navbar-items">
                 <div class="nav-item"><a href="index.html">Rules</a></div>
@@ -28,17 +33,106 @@
                 </div>
             </div>
         </nav>
-        <img src="public/images/freepik-enhance-457201.svg" class="main-image">
-        <div class="content-block">
-            <h1 class="main-title">Votings</h1>
-            <p class="subtitle">Forecast elections, laws, and events. Stake $MEMO or card power to play.</p>
+        
+        <!-- Основной контент -->
+        <div class="voting-content">
+            <!-- Заголовок голосования -->
+            <h1 class="voting-main-title">Will Greenland join the USA?</h1>
             
-            <!-- Здесь будет контент для голосований -->
-            <div class="voting-container">
-                <p class="coming-soon">Голосования скоро будут доступны...</p>
+            <!-- Секция токенов -->
+            <div class="token-labels">
+                <div class="token-label left">$FREEPENGU</div>
+                <div class="token-label right">$GREENSTATE</div>
+            </div>
+            
+            <!-- Изображения -->
+            <div class="voting-images">
+                <img src="public/images/pengu-card.png" alt="Pengu Card" class="left-card-image">
+                <img src="public/images/greenland-card.png" alt="Greenland Card" class="right-card-image">
+            </div>
+            
+            <!-- Кнопки голосования -->
+            <div class="voting-buttons">
+                <button class="vote-btn vote-no">NO</button>
+                <button class="vote-btn vote-yes">YES</button>
+            </div>
+            
+            <!-- Таймер -->
+            <div class="timer-wrapper">
+                <div class="timer-outer-circle">
+                    <div class="timer-half-circle"></div>
+                    <div class="timer-inner-text">
+                        <div class="timer-countdown" id="countdown">00:19:28</div>
+                        <div class="timer-info">The winning option will launch a new coin</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Индикатор результатов -->
+            <div class="voting-results">
+                <div class="results-bar">
+                    <div class="no-votes">423</div>
+                    <div class="dots-container">
+                        <div class="green-dots"></div>
+                        <div class="progress-indicator"></div>
+                        <div class="red-dots"></div>
+                    </div>
+                    <div class="yes-votes">963</div>
+                </div>
+            </div>
+            
+            <!-- Заголовок коллекции карточек -->
+            <h2 class="cards-title">Collect this NFT cards during event</h2>
+            
+            <!-- Карточки NFT -->
+            <div class="nft-cards-container">
+                <div class="nft-row">
+                    <img src="public/images/card1.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card2.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card3.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card4.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card5.png" alt="NFT Card" class="nft-card">
+                </div>
+                <div class="nft-row">
+                    <img src="public/images/card6.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card7.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card8.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card9.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/card10.png" alt="NFT Card" class="nft-card">
+                </div>
             </div>
         </div>
+        
+        <!-- Градиентный оверлей для нижней части -->
+        <div class="bottom-overlay"></div>
     </div>
+    
+    <script>
+    // Таймер обратного отсчета
+    document.addEventListener('DOMContentLoaded', function() {
+        // Начальное время: 19 минут 28 секунд
+        let totalSeconds = 19 * 60 + 28;
+        
+        function updateTimer() {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            // Форматирование времени
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('countdown').textContent = `00:${formattedTime}`;
+            
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                document.getElementById('countdown').textContent = "00:00:00";
+            }
+        }
+        
+        updateTimer();
+    });
+    </script>
+    
     <script src="js/main.js"></script>
 </body>
 </html> 

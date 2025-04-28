@@ -768,6 +768,50 @@ body {
     .coming-soon {
         font-size: 18px;
     }
+
+    .timer-circle {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .inner-circle {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .time-number {
+        font-size: 28px;
+    }
+    
+    .time-label {
+        font-size: 12px;
+    }
+    
+    .time-separator {
+        font-size: 28px;
+    }
+    
+    .vs-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .candidate-card {
+        width: 150px;
+    }
+    
+    .candidate-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .vs-circle {
+        margin: 10px 0;
+    }
+    
+    .past-voting-card {
+        width: 100%;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -857,6 +901,37 @@ body {
     .process-flow {
         gap: 20px;
     }
+
+    .timer-circle {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .inner-circle {
+        width: 190px;
+        height: 190px;
+    }
+    
+    .time-number {
+        font-size: 24px;
+    }
+    
+    .time-separator {
+        font-size: 24px;
+    }
+    
+    .voting-title {
+        font-size: 28px;
+    }
+    
+    .candidate-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .candidate-name {
+        font-size: 18px;
+    }
 }
 
 /* Мобильное меню больше не нужно */
@@ -869,7 +944,6 @@ body {
     margin-top: 50px;
     width: 100%;
     max-width: 1000px;
-    min-height: 400px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
     backdrop-filter: blur(10px);
@@ -886,4 +960,743 @@ body {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
     opacity: 0.7;
+}
+
+/* Новые стили для страницы голосования с таймером */
+.next-voting-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.voting-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.voting-description {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.timer-container {
+    margin: 30px 0 50px;
+    position: relative;
+}
+
+.timer-circle {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.4) 0%, rgba(79, 70, 229, 0.4) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+}
+
+.inner-circle {
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
+    background: rgba(17, 17, 18, 0.7);
+    backdrop-filter: blur(5px);
+    position: absolute;
+}
+
+.time-display {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.days-container, .hours-container, .minutes-container, .seconds-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 5px;
+}
+
+.time-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+}
+
+.time-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 5px;
+}
+
+.time-separator {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    margin: 0 2px;
+    line-height: 1;
+    padding-bottom: 20px;
+}
+
+.vs-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.candidate-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+}
+
+.candidate-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid rgba(124, 58, 237, 0.5);
+}
+
+.candidate-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.candidate-party {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.vs-circle {
+    width: 70px;
+    height: 70px;
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin: 0 20px;
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+}
+
+.voting-button {
+    padding: 12px 30px;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.past-votings {
+    margin-top: 60px;
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.voting-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+}
+
+.past-voting-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    width: 45%;
+    min-width: 300px;
+    backdrop-filter: blur(10px);
+}
+
+.past-voting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.past-voting-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.past-voting-status {
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.past-voting-status.completed {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+}
+
+.past-voting-description {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+}
+
+.past-voting-result {
+    display: flex;
+    align-items: center;
+}
+
+.winner {
+    display: flex;
+    align-items: center;
+}
+
+.winner-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid rgba(16, 185, 129, 0.5);
+}
+
+.winner-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.winner-label {
+    font-size: 14px;
+    color: #10B981;
+    margin-bottom: 3px;
+}
+
+.winner-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+/* Стили для новой страницы голосования */
+.voting-page {
+    background-color: #201103;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Фоновые эффекты */
+.bg-effect {
+    width: 285px;
+    height: 285px;
+    position: absolute;
+    box-shadow: 300px 300px 300px;
+    border-radius: 9999px;
+    filter: blur(150px);
+    z-index: 0;
+}
+
+.bg-effect-red {
+    left: 192px;
+    top: 212px;
+    background: #FF3030;
+}
+
+.bg-effect-green {
+    left: 981px;
+    top: 212px;
+    background: #61E652;
+}
+
+/* Основной контент голосования */
+.voting-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index: 5;
+    padding-top: 85px;
+}
+
+/* Заголовок голосования */
+.voting-main-title {
+    font-size: 32px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 70px;
+}
+
+/* Токены */
+.token-labels {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 800px;
+    margin-top: 20px;
+}
+
+.token-label {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: white;
+    text-align: center;
+}
+
+.token-label.left {
+    margin-left: 40px;
+}
+
+.token-label.right {
+    margin-right: 40px;
+}
+
+/* Изображения карточек */
+.voting-images {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1060px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.left-card-image {
+    width: 331px;
+    height: 331px;
+    object-fit: contain;
+}
+
+.right-card-image {
+    width: 337px;
+    height: 337px;
+    transform: rotate(180deg);
+    object-fit: contain;
+}
+
+/* Кнопки голосования */
+.voting-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: -380px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 10;
+}
+
+.vote-btn {
+    width: 142px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: white;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+}
+
+.vote-no {
+    background-color: #F04438;
+}
+
+.vote-yes {
+    background-color: #039855;
+}
+
+/* Таймер */
+.timer-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+    z-index: 5;
+}
+
+.timer-outer-circle {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    border: 3px solid white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-half-circle {
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    top: 0;
+    right: 0;
+    border-top-right-radius: 125px;
+    border: 5px solid white;
+    border-bottom: none;
+    border-left: none;
+}
+
+.timer-outer-circle::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    top: 125px;
+    right: 7px;
+}
+
+.timer-inner-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-countdown {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 38px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.timer-info {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: white;
+    max-width: 180px;
+    text-align: center;
+}
+
+/* Индикатор результатов */
+.voting-results {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.results-bar {
+    width: 592px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.no-votes {
+    color: #F04438;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-right: 10px;
+}
+
+.yes-votes {
+    color: #12B76A;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-left: 10px;
+}
+
+.dots-container {
+    flex: 1;
+    height: 32px;
+    display: flex;
+    position: relative;
+    align-items: center;
+}
+
+.green-dots {
+    display: flex;
+    flex: 2;
+}
+
+.red-dots {
+    display: flex;
+    flex: 1;
+}
+
+.green-dots::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 32%;
+    height: 8px;
+    display: flex;
+    justify-content: space-between;
+    background-image: radial-gradient(circle, #12B76A 3px, transparent 3px);
+    background-size: 15px 8px;
+    background-position: 0 center;
+    background-repeat: repeat-x;
+}
+
+.red-dots::before {
+    content: "";
+    position: absolute;
+    left: 70%;
+    right: 0;
+    height: 8px;
+    display: flex;
+    justify-content: space-between;
+    background-image: radial-gradient(circle, #F04438 3px, transparent 3px);
+    background-size: 15px 8px;
+    background-position: 0 center;
+    background-repeat: repeat-x;
+}
+
+.progress-indicator {
+    position: absolute;
+    width: 16px;
+    height: 32px;
+    left: 68%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.progress-indicator::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, white 1px, transparent 1px);
+    background-size: 4px 7px;
+    background-position: center;
+    background-repeat: repeat-y;
+}
+
+/* Заголовок карточек */
+.cards-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 70px;
+    color: white;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* Контейнер с NFT карточками */
+.nft-cards-container {
+    max-width: 770px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    z-index: 10;
+}
+
+.nft-row {
+    display: flex;
+    justify-content: center;
+    gap: 23px;
+}
+
+.nft-card {
+    width: 135px;
+    height: 205px;
+    border-radius: 5px;
+    object-fit: contain;
+}
+
+/* Градиентный оверлей для нижней части */
+.bottom-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 550px;
+    background: linear-gradient(180deg, rgba(32, 17, 3, 0) 0%, #201103 71%);
+    opacity: 0.8;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Адаптивные стили для страницы голосования */
+@media screen and (max-width: 1200px) {
+    .voting-content {
+        padding: 60px 20px 0;
+    }
+    
+    .voting-images {
+        max-width: 90%;
+    }
+    
+    .left-card-image, .right-card-image {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .voting-buttons {
+        margin-top: -320px;
+    }
+    
+    .results-bar {
+        width: 90%;
+    }
+    
+    .nft-cards-container {
+        max-width: 90%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .voting-main-title {
+        font-size: 28px;
+        line-height: 1.4;
+    }
+    
+    .token-labels {
+        margin-top: 40px;
+    }
+    
+    .voting-images {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .left-card-image, .right-card-image {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .right-card-image {
+        margin-top: -40px;
+    }
+    
+    .voting-buttons {
+        margin-top: 20px;
+    }
+    
+    .timer-outer-circle {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .timer-half-circle {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .timer-outer-circle::after {
+        top: 110px;
+    }
+    
+    .timer-countdown {
+        font-size: 26px;
+    }
+    
+    .nft-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nft-card {
+        width: 100px;
+        height: 152px;
+    }
+    
+    .cards-title {
+        font-size: 28px;
+        line-height: 1.4;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .voting-main-title {
+        font-size: 24px;
+    }
+    
+    .token-label {
+        font-size: 16px;
+    }
+    
+    .left-card-image, .right-card-image {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .vote-btn {
+        width: 120px;
+        font-size: 13px;
+    }
+    
+    .timer-outer-circle {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .timer-half-circle {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .timer-outer-circle::after {
+        top: 90px;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .timer-countdown {
+        font-size: 22px;
+    }
+    
+    .timer-info {
+        font-size: 14px;
+    }
+    
+    .no-votes, .yes-votes {
+        font-size: 14px;
+    }
+    
+    .nft-card {
+        width: 80px;
+        height: 121px;
+    }
+    
+    .cards-title {
+        font-size: 24px;
+    }
 } 
