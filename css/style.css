@@ -12,12 +12,14 @@ body {
     justify-content: center;
     align-items: flex-start;
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .frame {
     position: relative;
-    width: 2486px;
-    height: 2065px;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
 }
 
 .main-image {
@@ -48,6 +50,21 @@ body {
 .frame::after {
     background: linear-gradient(180deg, rgba(32, 17, 3, 0) 0%, #201103 71%);
     box-shadow: 0px 24px 48px -12px rgba(15.96, 23.62, 40.04, 0.18);
+}
+
+/* Страница голосования - без прокрутки */
+body.voting-page-body {
+    overflow-y: hidden;
+}
+
+.voting-page {
+    background-color: #201103;
+    position: relative;
+    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Navbar styles */
@@ -987,68 +1004,83 @@ body {
 }
 
 .timer-container {
-    margin: 30px 0 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-wrapper {
     position: relative;
 }
 
 .timer-circle {
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.4) 0%, rgba(79, 70, 229, 0.4) 100%);
+    width: 240px;
+    height: 240px;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
-}
-
-.inner-circle {
-    width: 270px;
-    height: 270px;
-    border-radius: 50%;
-    background: rgba(17, 17, 18, 0.7);
-    backdrop-filter: blur(5px);
-    position: absolute;
-}
-
-.time-display {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 0 20px;
-}
-
-.days-container, .hours-container, .minutes-container, .seconds-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 5px;
+    justify-content: center;
+    background-color: transparent;
+    border-radius: 50%;
 }
 
-.time-number {
+.timer-dots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+.timer-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 1;
+    border: 4px solid white;
+    clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
+    transform-origin: center;
+}
+
+.timer-dot-indicator {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: white;
+    border-radius: 50%;
+    z-index: 30;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.timer-content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#timer {
     font-size: 36px;
-    font-weight: 700;
+    font-weight: 600;
     color: white;
-    line-height: 1;
+    margin-bottom: 10px;
 }
 
-.time-label {
+.timer-info {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 5px;
-}
-
-.time-separator {
-    font-size: 36px;
-    font-weight: 700;
-    color: white;
-    margin: 0 2px;
-    line-height: 1;
-    padding-bottom: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 160px;
+    text-align: center;
+    line-height: 1.3;
 }
 
 .vs-container {
@@ -1213,7 +1245,8 @@ body {
     background-color: #201103;
     position: relative;
     min-height: 100vh;
-    overflow-x: hidden;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* Фоновые эффекты */
@@ -1243,75 +1276,67 @@ body {
 .voting-content {
     position: relative;
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     z-index: 5;
-    padding-top: 85px;
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: flex-start;
 }
 
 /* Заголовок голосования */
 .voting-main-title {
-    font-size: 32px;
+    font-size: 42px;
     font-weight: 300;
     color: white;
     text-align: center;
-    margin-bottom: 20px;
-    line-height: 70px;
-}
-
-/* Токены */
-.token-labels {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin: 0 auto;
-    max-width: 800px;
-    margin-top: 20px;
-}
-
-.token-label {
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 28px;
-    color: white;
-    text-align: center;
-}
-
-.token-label.left {
-    margin-left: 40px;
-}
-
-.token-label.right {
-    margin-right: 40px;
+    margin-bottom: 50px;
+    line-height: 1.2;
 }
 
 /* Изображения карточек */
 .voting-images {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     max-width: 1060px;
     margin: 0 auto;
     position: relative;
 }
 
-.left-card-image {
-    width: 331px;
-    height: 331px;
-    object-fit: contain;
+.image-with-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.right-card-image {
-    width: 337px;
-    height: 337px;
-    transform: rotate(180deg);
+.card-placeholder {
+    width: 260px;
+    height: 260px;
+    border-radius: 20px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.card-image {
+    width: 220px;
+    height: 220px;
     object-fit: contain;
+    z-index: 5;
 }
 
 /* Кнопки голосования */
 .voting-buttons {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: -380px;
+    gap: 30px;
+    margin-top: 20px;
     margin-bottom: 30px;
     position: relative;
     z-index: 10;
@@ -1319,16 +1344,27 @@ body {
 
 .vote-btn {
     width: 142px;
-    padding: 10px 12px;
+    padding: 12px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     line-height: 20px;
     color: white;
     text-align: center;
     border: none;
     cursor: pointer;
-    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vote-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 10px 10px -4px rgba(16, 24, 40, 0.3);
+}
+
+.vote-btn.clicked {
+    transform: scale(0.95);
+    box-shadow: 0px 5px 5px -3px rgba(16, 24, 40, 0.15);
 }
 
 .vote-no {
@@ -1339,205 +1375,248 @@ body {
     background-color: #039855;
 }
 
-/* Таймер */
-.timer-wrapper {
+/* Новые стили для таймера */
+.timer-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
-    position: relative;
-    z-index: 5;
-}
-
-.timer-outer-circle {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    border: 3px solid white;
-    position: relative;
-    display: flex;
     align-items: center;
-    justify-content: center;
 }
 
-.timer-half-circle {
-    position: absolute;
-    width: 125px;
-    height: 125px;
-    top: 0;
-    right: 0;
-    border-top-right-radius: 125px;
-    border: 5px solid white;
-    border-bottom: none;
-    border-left: none;
+.timer-wrapper {
+    position: relative;
 }
 
-.timer-outer-circle::after {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    background: white;
-    border-radius: 50%;
-    top: 125px;
-    right: 7px;
-}
-
-.timer-inner-text {
-    text-align: center;
+.timer-circle {
+    width: 240px;
+    height: 240px;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: transparent;
+    border-radius: 50%;
 }
 
-.timer-countdown {
-    font-size: 30px;
-    font-weight: 500;
-    line-height: 38px;
+.timer-dots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+.timer-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 1;
+    border: 4px solid white;
+    clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
+    transform-origin: center;
+}
+
+/* Фиксированная точка в начале линии заполнения */
+.timer-fixed-dot {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: white;
+    border-radius: 50%;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+}
+
+/* Убираем старую точку-индикатор */
+.timer-dot-indicator {
+    display: none;
+}
+
+.timer-content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#timer {
+    font-size: 36px;
+    font-weight: 600;
     color: white;
     margin-bottom: 10px;
 }
 
 .timer-info {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-    color: white;
-    max-width: 180px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 160px;
     text-align: center;
+    line-height: 1.3;
+}
+
+.timer-dot {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateX(50%);
 }
 
 /* Индикатор результатов */
 .voting-results {
-    margin-top: 50px;
+    margin-top: 40px;
+    margin-bottom: 30px;
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 10;
 }
 
-.results-bar {
-    width: 592px;
+.results-container {
+    width: 90%;
+    max-width: 800px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 15px;
     position: relative;
+    z-index: 10;
+}
+
+.vote-count {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
 }
 
 .no-votes {
-    color: #F04438;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
-    margin-right: 10px;
+    color: #FF3A30;
+    text-shadow: 0 0 5px rgba(255, 58, 48, 0.5);
 }
 
 .yes-votes {
-    color: #12B76A;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
-    margin-left: 10px;
+    color: #2DCE89;
+    text-shadow: 0 0 5px rgba(45, 206, 137, 0.5);
 }
 
-.dots-container {
+.progress-bar {
     flex: 1;
-    height: 32px;
-    display: flex;
+    height: 20px;
     position: relative;
+    display: flex;
     align-items: center;
+    overflow: hidden;
 }
 
-.green-dots {
-    display: flex;
-    flex: 2;
-}
-
-.red-dots {
-    display: flex;
-    flex: 1;
-}
-
-.green-dots::before {
-    content: "";
+.red-dots-line {
     position: absolute;
     left: 0;
-    right: 32%;
-    height: 8px;
-    display: flex;
-    justify-content: space-between;
-    background-image: radial-gradient(circle, #12B76A 3px, transparent 3px);
-    background-size: 15px 8px;
-    background-position: 0 center;
-    background-repeat: repeat-x;
-}
-
-.red-dots::before {
-    content: "";
-    position: absolute;
-    left: 70%;
-    right: 0;
-    height: 8px;
-    display: flex;
-    justify-content: space-between;
-    background-image: radial-gradient(circle, #F04438 3px, transparent 3px);
-    background-size: 15px 8px;
-    background-position: 0 center;
-    background-repeat: repeat-x;
-}
-
-.progress-indicator {
-    position: absolute;
-    width: 16px;
-    height: 32px;
-    left: 68%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.progress-indicator::before {
-    content: "";
-    position: absolute;
-    width: 100%;
+    width: 40%;
     height: 100%;
-    background-image: radial-gradient(circle, white 1px, transparent 1px);
-    background-size: 4px 7px;
+    background-image: radial-gradient(circle, #FF3A30 4px, transparent 4px);
+    background-size: 15px 15px;
     background-position: center;
-    background-repeat: repeat-y;
+    background-repeat: repeat-x;
+    transition: width 0.5s ease-in-out;
+    z-index: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 58, 48, 0.8));
+}
+
+.green-dots-line {
+    position: absolute;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background-image: radial-gradient(circle, #2DCE89 4px, transparent 4px);
+    background-size: 15px 15px;
+    background-position: center;
+    background-repeat: repeat-x;
+    transition: width 0.5s ease-in-out;
+    z-index: 1;
+    filter: drop-shadow(0 0 3px rgba(45, 206, 137, 0.8));
+}
+
+.vertical-separator {
+    position: absolute;
+    left: 40%;
+    width: 2px;
+    height: 30px;
+    background-color: white;
+    z-index: 2;
+    transition: left 0.5s ease-in-out;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 /* Заголовок карточек */
 .cards-title {
     text-align: center;
-    font-size: 32px;
-    font-weight: 300;
-    line-height: 70px;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.2;
     color: white;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 /* Контейнер с NFT карточками */
 .nft-cards-container {
-    max-width: 770px;
+    max-width: 850px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 25px;
     position: relative;
     z-index: 10;
+    margin-bottom: 80px;
 }
 
 .nft-row {
     display: flex;
     justify-content: center;
-    gap: 23px;
+    gap: 25px;
 }
 
 .nft-card {
-    width: 135px;
-    height: 205px;
+    width: 140px;
+    height: 210px;
     border-radius: 5px;
     object-fit: contain;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+    border: 3px solid #B48D3F;
+}
+
+/* Индикатор результатов - доработанный стиль для точек */
+.dots-container {
+    position: relative;
+    height: 20px;
+    display: flex;
+    width: 100%;
+}
+
+.dots-container::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background-image: radial-gradient(circle, #12B76A 3px, transparent 3px), radial-gradient(circle, #F04438 3px, transparent 3px);
+    background-size: 15px 15px, 15px 15px;
+    background-position: left center, right center;
+    background-repeat: repeat-x;
 }
 
 /* Градиентный оверлей для нижней части */
@@ -1546,10 +1625,10 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 550px;
+    height: 450px;
     background: linear-gradient(180deg, rgba(32, 17, 3, 0) 0%, #201103 71%);
-    opacity: 0.8;
-    z-index: 1;
+    opacity: 0.9;
+    z-index: 5;
     pointer-events: none;
 }
 
@@ -1563,9 +1642,9 @@ body {
         max-width: 90%;
     }
     
-    .left-card-image, .right-card-image {
-        width: 250px;
-        height: 250px;
+    .card-placeholder {
+        width: 320px;
+        height: 320px;
     }
     
     .voting-buttons {
@@ -1578,6 +1657,15 @@ body {
     
     .nft-cards-container {
         max-width: 90%;
+    }
+    
+    .timer-side-image {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .timer-wrapper {
+        gap: 30px;
     }
 }
 
@@ -1597,13 +1685,9 @@ body {
         gap: 20px;
     }
     
-    .left-card-image, .right-card-image {
-        width: 200px;
-        height: 200px;
-    }
-    
-    .right-card-image {
-        margin-top: -40px;
+    .card-placeholder {
+        width: 250px;
+        height: 250px;
     }
     
     .voting-buttons {
@@ -1642,6 +1726,22 @@ body {
         font-size: 28px;
         line-height: 1.4;
     }
+    
+    .timer-wrapper {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .timer-side-image {
+        width: 180px;
+        height: 180px;
+        order: 1;
+    }
+    
+    .timer-outer-circle {
+        order: 0;
+        margin-bottom: 20px;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -1653,9 +1753,9 @@ body {
         font-size: 16px;
     }
     
-    .left-card-image, .right-card-image {
-        width: 150px;
-        height: 150px;
+    .card-placeholder {
+        width: 200px;
+        height: 200px;
     }
     
     .vote-btn {
@@ -1699,4 +1799,171 @@ body {
     .cards-title {
         font-size: 24px;
     }
+    
+    .timer-side-image {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+/* Изображения карточек */
+.voting-images {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1060px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.image-with-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.left-card-placeholder {
+    position: relative;
+}
+
+.left-card-placeholder::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background: linear-gradient(135deg, rgba(255, 48, 48, 0.3) 0%, rgba(255, 48, 48, 0.1) 100%);
+    border-radius: 50%;
+    filter: blur(20px);
+    z-index: 1;
+}
+
+.right-card-placeholder {
+    position: relative;
+}
+
+.right-card-placeholder::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background: linear-gradient(135deg, rgba(97, 230, 82, 0.3) 0%, rgba(97, 230, 82, 0.1) 100%);
+    border-radius: 50%;
+    filter: blur(20px);
+    z-index: 1;
+}
+
+/* Токены */
+.token-label {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: white;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.vote-btn {
+    width: 142px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: white;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+}
+
+.vote-no {
+    background-color: #F04438;
+}
+
+.vote-yes {
+    background-color: #039855;
+}
+
+.timer-inner-circle {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#timer {
+    font-size: 30px;
+    font-weight: 500;
+    color: white;
+}
+
+.results-bar {
+    width: 80%;
+    max-width: 592px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.no-votes {
+    color: #FF3A30;
+    text-shadow: 0 0 5px rgba(255, 58, 48, 0.5);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-right: 10px;
+}
+
+.yes-votes {
+    color: #2DCE89;
+    text-shadow: 0 0 5px rgba(45, 206, 137, 0.5);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-left: 10px;
+}
+
+.green-dots {
+    display: flex;
+    flex: 2;
+}
+
+.red-dots {
+    display: flex;
+    flex: 1;
+}
+
+.progress-indicator {
+    position: absolute;
+    width: 16px;
+    height: 32px;
+    left: 68%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.progress-indicator::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, white 1px, transparent 1px);
+    background-size: 4px 7px;
+    background-position: center;
+    background-repeat: repeat-y;
+}
+
+.nft-card:hover {
+    transform: translateY(-10px);
 } 

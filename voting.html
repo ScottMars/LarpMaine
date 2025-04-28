@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="voting-page-body">
     <div class="frame voting-page">
         <!-- Фоновые эффекты -->
         <div class="bg-effect bg-effect-red"></div>
@@ -39,16 +39,33 @@
             <!-- Заголовок голосования -->
             <h1 class="voting-main-title">Will Greenland join the USA?</h1>
             
-            <!-- Секция токенов -->
-            <div class="token-labels">
-                <div class="token-label left">$FREEPENGU</div>
-                <div class="token-label right">$GREENSTATE</div>
-            </div>
-            
             <!-- Изображения -->
             <div class="voting-images">
-                <img src="public/images/pengu-card.png" alt="Pengu Card" class="left-card-image">
-                <img src="public/images/greenland-card.png" alt="Greenland Card" class="right-card-image">
+                <div class="image-with-label">
+                    <div class="card-placeholder left-card-placeholder">
+                        <img src="public/images/image-6.png" alt="Left Penguin" class="card-image">
+                    </div>
+                    <div class="token-label">$FREEPENGU</div>
+                </div>
+                <div class="timer-container">
+                    <div class="timer-wrapper">
+                        <div class="timer-circle">
+                            <img src="public/images/ellipse-1.svg" alt="Timer dots" class="timer-dots">
+                            <div class="timer-progress"></div>
+                            <div class="timer-dot-indicator"></div>
+                            <div class="timer-content">
+                                <span id="timer">00:19:28</span>
+                                <div class="timer-info">The winning option will launch a new coin</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-with-label">
+                    <div class="card-placeholder right-card-placeholder">
+                        <img src="public/images/image-2.png" alt="Right Penguin" class="card-image">
+                    </div>
+                    <div class="token-label">$GREENSTATE</div>
+                </div>
             </div>
             
             <!-- Кнопки голосования -->
@@ -57,27 +74,16 @@
                 <button class="vote-btn vote-yes">YES</button>
             </div>
             
-            <!-- Таймер -->
-            <div class="timer-wrapper">
-                <div class="timer-outer-circle">
-                    <div class="timer-half-circle"></div>
-                    <div class="timer-inner-text">
-                        <div class="timer-countdown" id="countdown">00:19:28</div>
-                        <div class="timer-info">The winning option will launch a new coin</div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Индикатор результатов -->
             <div class="voting-results">
-                <div class="results-bar">
-                    <div class="no-votes">423</div>
-                    <div class="dots-container">
-                        <div class="green-dots"></div>
-                        <div class="progress-indicator"></div>
-                        <div class="red-dots"></div>
+                <div class="results-container">
+                    <div class="vote-count no-votes">423</div>
+                    <div class="progress-bar">
+                        <div class="red-dots-line"></div>
+                        <div class="vertical-separator"></div>
+                        <div class="green-dots-line"></div>
                     </div>
-                    <div class="yes-votes">963</div>
+                    <div class="vote-count yes-votes">963</div>
                 </div>
             </div>
             
@@ -87,18 +93,18 @@
             <!-- Карточки NFT -->
             <div class="nft-cards-container">
                 <div class="nft-row">
-                    <img src="public/images/card1.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card2.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card3.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card4.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card5.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/NFT4.png" alt="PICKLE JD VANCE" class="nft-card">
+                    <img src="public/images/NFT3.png" alt="MEXICAN TRUMP" class="nft-card">
+                    <img src="public/images/NFT1.png" alt="XIPOOH" class="nft-card">
+                    <img src="public/images/NFT2.png" alt="J.D.VANCE" class="nft-card">
+                    <img src="public/images/NFT5.png" alt="SPACE MUSK" class="nft-card">
                 </div>
                 <div class="nft-row">
-                    <img src="public/images/card6.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card7.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card8.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card9.png" alt="NFT Card" class="nft-card">
-                    <img src="public/images/card10.png" alt="NFT Card" class="nft-card">
+                    <img src="public/images/NFT5.png" alt="SPACE MUSK" class="nft-card">
+                    <img src="public/images/NFT3.png" alt="MEXICAN TRUMP" class="nft-card">
+                    <img src="public/images/NFT4.png" alt="PICKLE JD VANCE" class="nft-card">
+                    <img src="public/images/NFT1.png" alt="XIPOOH" class="nft-card">
+                    <img src="public/images/NFT2.png" alt="J.D.VANCE" class="nft-card">
                 </div>
             </div>
         </div>
@@ -110,22 +116,69 @@
     <script>
     // Таймер обратного отсчета
     document.addEventListener('DOMContentLoaded', function() {
-        // Начальное время: 19 минут 28 секунд
-        let totalSeconds = 19 * 60 + 28;
+        // Настройки таймера
+        const initialMinutes = 19;
+        const initialSeconds = 28;
+        const totalInitialSeconds = initialMinutes * 60 + initialSeconds;
+        let totalSeconds = totalInitialSeconds;
+        
+        // Элементы для анимации
+        const timerElement = document.getElementById('timer');
+        const timerProgress = document.querySelector('.timer-progress');
+        const timerDotIndicator = document.querySelector('.timer-dot-indicator');
         
         function updateTimer() {
-            const minutes = Math.floor(totalSeconds / 60);
+            // Расчет времени
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
             
             // Форматирование времени
-            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('countdown').textContent = `00:${formattedTime}`;
+            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timerElement.textContent = formattedTime;
+            
+            // Расчет прогресса (от 0 до 1)
+            const progress = 1 - (totalSeconds / totalInitialSeconds);
+            
+            // Обновление заполнения и позиции точки
+            const angle = progress * 360;
+            
+            // Вычисляем позицию точки (в радианах)
+            const dotAngle = angle * Math.PI / 180;
+            
+            // Вычисляем координаты точки
+            const x = Math.sin(dotAngle);
+            const y = -Math.cos(dotAngle);
+            
+            // Устанавливаем точку на круге (делаем точку немного больше и выделяем её)
+            const dotX = 50 + 48 * x;
+            const dotY = 50 + 48 * y;
+            
+            // Перемещаем точку
+            timerDotIndicator.style.left = `${dotX}%`;
+            timerDotIndicator.style.top = `${dotY}%`;
+            timerDotIndicator.style.display = 'block'; // Гарантируем, что точка видна
+            
+            // Создаем clipping path для линии заполнения
+            let clipPath;
+            if (angle <= 90) {
+                clipPath = `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.sin(dotAngle)}% ${50 - 50 * Math.cos(dotAngle)}%)`;
+            } else if (angle <= 180) {
+                clipPath = `polygon(50% 50%, 50% 0%, 100% 0%, ${50 + 50 * Math.sin(dotAngle)}% ${50 - 50 * Math.cos(dotAngle)}%)`;
+            } else if (angle <= 270) {
+                clipPath = `polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, ${50 + 50 * Math.sin(dotAngle)}% ${50 - 50 * Math.cos(dotAngle)}%)`;
+            } else {
+                clipPath = `polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, ${50 + 50 * Math.sin(dotAngle)}% ${50 - 50 * Math.cos(dotAngle)}%)`;
+            }
+            
+            // Применяем стили для прогресса
+            timerProgress.style.clipPath = clipPath;
             
             if (totalSeconds > 0) {
                 totalSeconds--;
                 setTimeout(updateTimer, 1000);
             } else {
-                document.getElementById('countdown').textContent = "00:00:00";
+                timerElement.textContent = "00:00:00";
             }
         }
         
