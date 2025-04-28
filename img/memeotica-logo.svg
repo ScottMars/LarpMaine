@@ -1,0 +1,11 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="50" fill="url(#paint0_radial)" />
+  <path d="M38 62L48 52L60 70L72 52L82 62" stroke="white" stroke-width="3" stroke-linecap="round" />
+  <text x="60" y="90" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">MEMEOTICA</text>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 40) rotate(90) scale(70)">
+      <stop offset="0" stop-color="#9333EA" />
+      <stop offset="1" stop-color="#6D28D9" />
+    </radialGradient>
+  </defs>
+</svg> 
