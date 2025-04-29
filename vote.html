@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Голосования - Memeotica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Подключение Supabase -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
+    <!-- Наши скрипты -->
+    <!-- <script src="js/supabase-config.js"></script> -->
+    <!-- <script src="js/voting-api.js"></script> -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/vote.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="">
+    <header class=" sticky top-4 mt-4 z-40">
+        <nav>
+            <ul class=" flex items-center gap-5">
+                <li id="menu" class="flex gap-4 md:hidden">
+                    <svg class=" w-5 h-5" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 10H17.5M2.5 5H17.5M2.5 15H12.5" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class=" w-px block bg-white/30"></span>   
+                </li>
+                <li data-mobile-disable class="">
+                    <a class="px-1 w-full" href="#">
+                        Rules
+                    </a>
+                </li>
+                <li data-mobile-disable class="">
+                    <a class="px-1 w-full" href="#">
+                        Rewards
+                    </a>
+                </li>
+                <li data-mobile-disable class="">
+                    <a class="px-1 w-full" href="vote.html">
+                        Voting
+                    </a>
+                </li>
+                <li data-mobile-disable class="">
+                    <a class="px-1 w-full" href="#">
+                        Whitepaper
+                    </a>
+                </li>
+                <li data-mobile-disable class="">
+                    <a class="px-1 w-full" href="#">
+                        Roadmap
+                    </a>
+                </li>
+                <li data-mobile-disable class="">
+                    <a class="px-1 w-full" href="#">
+                        Leaderboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="public/images/DS.png" alt="DS" class="w-5 h-5">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="public/images/fi-11823292.svg" alt="Telegram" class="w-5 h-5">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="img/twitter-x.svg" alt="Twitter X" class="w-5 h-5">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div data-opened="false" id="drawer-menu" class="drawer">
+        <div class="drawer-overflow"></div>
+        <div class=" drawer-content text-xl bg-[#2D1E11] pt-4 px-6 pb-9 rounded-t-[3rem]">
+            <button class=" drawer-close absolute left-1/2 -translate-x-1/2 -top-12 flex gap-2 items-center py-1 pl-2 pr-3 rounded-full bg-[#7A5AF090]">
+                <svg class="w-6 h-6" width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 7L7 17M7 7L17 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Close
+            </button>
+            <ul class="divide-y divide-white/10">
+                <li class="">
+                    <a class="px-1 py-4 block w-full" href="#">
+                        Rules
+                    </a>
+                </li>
+                <li class="">
+                    <a class="px-1 py-4 block w-full" href="#">
+                        Rewards
+                    </a>
+                </li>
+                <li class="">
+                    <a class="px-1 py-4 block w-full" href="vote.html">
+                        Voting
+                    </a>
+                </li>
+                <li class="">
+                    <a class="px-1 py-4 block w-full" href="#">
+                        Whitepaper
+                    </a>
+                </li>
+                <li class="">
+                    <a class="px-1 py-4 block w-full" href="#">
+                        Roadmap
+                    </a>
+                </li>
+                <li class="">
+                    <a class="px-1 py-4 block w-full" href="#">
+                        Leaderboard
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <section class=" ">
+        <h1 id="title" class=" text-center text-4xl font-light mt-7">Will Greenland join the USA?</h1>
+        <div class="flex content flex-col ">
+            <div class="max-md:order-2 flex gap-5 items-center font-semibold mt-5 md:justify-center">
+                <div class=" max-md:w-full max-md:flex flex-col items-end">
+                    <p class="w-2/3 left-name text-center mb-2 md:hidden mt-2">LEFT_NAME</p>
+                    <button id="no" class=" bg-[#F04438] py-2.5 px-14  max-md:w-2/3 rounded-lg">NO</button>
+                </div>
+                <div class=" max-md:w-full">
+                    <p class="w-2/3 right-name text-center mb-2 md:hidden mt-2">RIGHT_NAME</p>
+                    <button id="yes" class="bg-[#039855] py-2.5 px-14  max-md:w-2/3 rounded-lg">YES</button>
+                </div>
+            </div>
+            <div class="max-md:order-1 text-center text-lg font-bold flex justify-center items-center">
+                <div class=" relative">
+                    <div class=" bg-[#FF3030] top-1/2 -translate-y-1/2  left-0 absolute blur-[10rem] w-72 h-72"></div> 
+                    <div class=" relative z-10">
+                        <img src="public/images/image-6.png" alt="Left Penguin" class="max-md:max-w-[150%] left-image max-md:-translate-x-24">
+                        <p class=" left-name max-md:hidden mt-2">LEFT_NAME</p>
+                    </div>
+                </div>
+
+                <div class=" z-10 max-md:mt-40 relative">
+                    <svg class=" h-40 w-40 md:w-72 md:h-72 -rotate-90" width="100%" height="100%" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="circle transition-all duration-300 " stroke="#fff" stroke-width="6" cx="125" cy="125" r="122" fill="none"/>
+                        <circle  stroke="#fff" stroke-width="3"  cx="125" cy="125" r="122" fill="none"  stroke-dasharray="3 8"/>
+                        <circle class=" transition-all duration-300 " id="end-circle" class="end-circle" cx="250" cy="125" r="6" fill="#fff"/>
+
+                    </svg>
+                    <div class="absolute inset-0 flex justify-center items-center flex-col">
+                        <div class="md:text-3xl text-2xl font-medium" id="countdown">00:00:00</div>
+                        <div class="text-center max-md:text-xs md:mt-2.5">The winning option will<br>launch a new coin</div>
+                    </div>
+                </div>
+
+                <div class=" relative">
+                    <div class=" bg-[#61E652] top-1/2 -translate-y-1/2  right-0 absolute blur-[10rem] w-72 h-72"></div> 
+                    <div class=" relative z-10">
+                        <img src="public/images/image-2.png" alt="Right Penguin" class="max-md:max-w-[150%] right-image">
+                        <p class=" right-name max-md:hidden mt-2">RIGHT_NAME</p>
+                    </div>
+                </div>
+            </div>
+            <div class="voting-results mt-12 md:mt-6 max-md:order-3  ">
+                <div class="results-container md:max-w-[50%]">
+                    <div class="progress-bar">
+                        <div class="red-dots-line">
+                            <div class="vote-count no-votes absolute right-0 text-[#F04438] bottom-full">423</div>
+                        </div>
+                        <div class="vertical-separator">
+                            <div class="dot"></div> 
+                            <div class="dot"></div> 
+                            <div class="dot"></div> 
+                            <div class="dot"></div> 
+                            <div class="dot"></div> 
+                        </div>
+                        <div class="green-dots-line">
+                            <div class="vote-count yes-votes absolute left-0 text-[#12B76A] bottom-full">963</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <h2 class=" mt-24 text-4xl relative z-10  font-light text-center mb-8">Collect this NFT cards during event</h2>
+            <div class="space-y-12 max-md:flex flex-wrap justify-center gap-6">
+                <div class="flex gap-6 max-md:contents justify-center">
+                    <img src="public/images/NFT4.png" alt="PICKLE JD VANCE" class="nft-card">
+                    <img src="public/images/NFT3.png" alt="MEXICAN TRUMP" class="nft-card">
+                    <img src="public/images/NFT1.png" alt="XIPOOH" class="nft-card">
+                    <img src="public/images/NFT2.png" alt="J.D.VANCE" class="nft-card">
+                    <img src="public/images/NFT5.png" alt="SPACE MUSK" class="nft-card">
+                </div>
+                <div class="flex gap-6 max-md:contents justify-center">
+                    <img src="public/images/NFT5.png" alt="SPACE MUSK" class="nft-card">
+                    <img src="public/images/NFT3.png" alt="MEXICAN TRUMP" class="nft-card">
+                    <img src="public/images/NFT4.png" alt="PICKLE JD VANCE" class="nft-card">
+                    <img src="public/images/NFT1.png" alt="XIPOOH" class="nft-card">
+                    <img src="public/images/NFT2.png" alt="J.D.VANCE" class="nft-card max-md:hidden">
+                </div>
+            </div>
+            <div class="bg-vote fixed opacity-80  bottom-0 h-[60%] pointer-events-none w-full"></div>
+        </div>
+    </section>
+
+    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/page/vote.js"></script>
+</body>
+</html> 

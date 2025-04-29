@@ -1,0 +1,93 @@
+
+.voting-results {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+}
+
+.results-container {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 10;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 1.25rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.red-dots-line {
+    position: absolute;
+    left: 0;
+    /* width: calc(60% - 1rem); */
+    width: 40%;
+    height: 100%;
+    background-image: radial-gradient(circle, #FF3A30 4px, transparent 4px);
+    background-size: 15px 15px;
+    background-position: center;
+    background-repeat: repeat-x;
+    transition: width 0.5s ease-in-out;
+    z-index: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 58, 48, 0.8));
+}
+
+.green-dots-line {
+    position: absolute;
+    right: 0;
+    width: calc(60% - 1rem);
+    height: 100%;
+    background-image: radial-gradient(circle, #2DCE89 4px, transparent 4px);
+    background-size: 15px 15px;
+    background-position: center;
+    background-repeat: repeat-x;
+    transition: width 0.5s ease-in-out;
+    z-index: 1;
+    filter: drop-shadow(0 0 3px rgba(45, 206, 137, 0.8));
+}
+
+
+.vertical-separator {
+    position: absolute;
+    left: 40%;
+    width: 1.25rem;
+    height: 100%;
+    display: flex;
+    gap:0.25rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: left 0.5s ease-in-out;
+
+}
+
+.vertical-separator .dot {
+    min-width: 0.25rem;
+    min-height: 0.25rem;
+    background-color: #fff;
+    border-radius: 100%;
+}
+
+.nft-card {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+    width: 9.5rem;
+    object-fit: contain;
+}
+
+.nft-card:hover {
+    transform: translateY(-10px);
+} 
+
+.bg-vote {
+    background: linear-gradient(180deg, rgba(32, 17, 3, 0) 41.97%, #201103 83.34%);
+
+}

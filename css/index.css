@@ -1,0 +1,79 @@
+
+html {
+    font-size: 1vw;
+    scroll-behavior: smooth;
+}
+
+
+
+body {
+    background-color: #201103;
+    color: #fff;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    user-select: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+}
+
+header nav {
+    padding: 0.75rem 1.5rem;    
+    width: fit-content;
+    margin: 0 auto;
+    border-radius: 3rem;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%);
+    backdrop-filter: blur(60px);
+    box-shadow: 0px 54px 66px 0px #4F3A8940 inset, 0px 1.5px 1.5px 0px #FFFFFF29 inset;
+    color: #fff;
+}
+
+
+
+.content {
+    padding: 0 9.5rem;
+}
+
+.drawer {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    color: white;
+    transition: bottom 0.3s ease-in-out;
+    z-index: 50;
+}
+
+.drawer-content {
+    position: relative;
+    z-index: 40;
+}
+
+.drawer-overflow {
+    position: fixed;
+    transition: all 0.3s ease-in-out;
+    background-color: #000000d5;
+}
+
+.drawer[data-opened="true"] .drawer-overflow {
+    inset: 0;
+}
+
+.drawer[data-opened="true"] {
+    bottom: 0
+}
+
+@media(max-width: 768px) {
+    html {
+        font-size: 3vw;
+    }
+    .content {
+        padding: 0 1rem;
+    }
+    header nav ul li[data-mobile-disable] {
+        display: none;
+    }
+}
