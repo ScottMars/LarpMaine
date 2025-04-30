@@ -88,6 +88,17 @@ import { vote_data, setCookie, getCookie } from "../index.js";
                     return;
                 }
                 setCookie("choice" + activeChoices.title, current_choices + 1);
+
+                // Обновляем счетчик кликов на кнопке
+                const button = choice === "yes" ? yes_button : no_button;
+                const clicks = current_choices + 1;
+                button.setAttribute("data-clicks", clicks);
+
+                // Блокируем кнопки если достигнут лимит
+                if (clicks >= 5) {
+                    yes_button.disabled = true;
+                    no_button.disabled = true;
+                }
             }
 
             if(choice == "yes") {
@@ -131,7 +142,15 @@ import { vote_data, setCookie, getCookie } from "../index.js";
             }
         });
 
+        // Инициализация счетчиков кликов при загрузке
+        const initial_choices = Number(getCookie("choice" + activeChoices.title)) || 0;
+        yes_button.setAttribute("data-clicks", initial_choices);
+        no_button.setAttribute("data-clicks", initial_choices);
         
+        if (initial_choices >= 5) {
+            yes_button.disabled = true;
+            no_button.disabled = true;
+        }
     }
 
 
