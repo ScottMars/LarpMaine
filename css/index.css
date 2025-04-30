@@ -1,10 +1,7 @@
-
 html {
     font-size: 1vw;
     scroll-behavior: smooth;
 }
-
-
 
 body {
     background-color: #201103;
@@ -29,8 +26,6 @@ header nav {
     box-shadow: 0px 54px 66px 0px #4F3A8940 inset, 0px 1.5px 1.5px 0px #FFFFFF29 inset;
     color: #fff;
 }
-
-
 
 .content {
     padding: 0 9.5rem;
@@ -76,4 +71,27 @@ header nav {
     header nav ul li[data-mobile-disable] {
         display: none;
     }
+}
+
+.coming-soon-popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    z-index: 1000;
+    font-size: 16px;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.coming-soon-popup.show {
+    opacity: 1;
+}
+
+.coming-soon-popup.hide {
+    opacity: 0;
 }

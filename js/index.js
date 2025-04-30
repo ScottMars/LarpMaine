@@ -58,3 +58,37 @@ export function getCookie(name) {
         .find(row => row.startsWith(name + '='))
         ?.split('=')[1];
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Создаем попап
+    const popup = document.createElement('div');
+    popup.className = 'coming-soon-popup';
+    popup.textContent = 'Coming Soon';
+    document.body.appendChild(popup);
+
+    // Функция для показа попапа
+    function showComingSoonPopup() {
+        popup.classList.remove('hide');
+        popup.classList.add('show');
+        setTimeout(() => {
+            popup.classList.remove('show');
+            popup.classList.add('hide');
+        }, 2000);
+    }
+
+    // Обработчик кликов для кнопок без ссылок
+    document.querySelectorAll('a[href="#"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            showComingSoonPopup();
+        });
+    });
+
+    // Обработчик кликов для кнопок без href
+    document.querySelectorAll('button:not([href])').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            showComingSoonPopup();
+        });
+    });
+});
