@@ -14,8 +14,8 @@ function createLeaderboardRow(data) {
     return `
         <div class="leaderboard-row">
             <div class="rank-container">
-                <img src="public/images/ellipse-2.svg" alt="Rank background" class="rank-bg">
-                <span class="rank">${data.rank}</span>
+                <div class="rank-bg"></div>
+                <div class="rank">${data.rank}</div>
             </div>
             <span class="wallet">${data.wallet}</span>
             <span>${data.votes}</span>

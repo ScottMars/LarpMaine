@@ -77,60 +77,114 @@ body {
 /* Top Players */
 .top-players {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
     gap: 24px;
+    position: relative;
+    width: 1200px;
+    height: 417px;
     margin: 0 auto;
-    max-width: 1200px;
-    padding: 0 20px;
+    left: 0;
 }
 
 .player-card {
-    flex: 1;
+    width: 384px;
     height: 417px;
-    background: rgba(6, 2, 19, 0.10);
-    box-shadow: 0px 15px 20px #583BDC inset;
+    background: rgba(6, 2, 19, 0.1);
+    box-shadow: inset 0px 0.626866px 1.8806px #FFFFFF, inset 0px 5.01493px 7.52239px #9A89E6, inset 0px 15.0448px 20.0597px #583BDC;
+    backdrop-filter: blur(5.01493px);
     border-radius: 64px;
-    overflow: hidden;
-    backdrop-filter: blur(5px);
-    max-width: 384px;
-}
-
-.card-content {
-    height: 100%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
-    box-shadow: 0px 108px 132px rgba(79, 58, 137, 0.25) inset;
-    border-radius: 64px;
-    backdrop-filter: blur(24px);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.nft-image {
-    width: 218px;
-    height: 218px;
-    margin-bottom: 16px;
+    flex: none;
+    flex-grow: 1;
     position: relative;
 }
 
-.nft-image img {
-    width: 100%;
-    height: 100%;
+.card-content {
+    position: absolute;
+    width: 96%;
+    height: 96%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
+    box-shadow: inset 0px 3px 3px rgba(255, 255, 255, 0.16), inset 0px 108px 132px rgba(79, 58, 137, 0.25);
+    backdrop-filter: blur(24px);
+    border-radius: 64px;
+}
+
+/* Блюр эффект под кубком */
+.nft-image::before {
+    content: '';
+    position: absolute;
+    width: 218px;
+    height: 218px;
+    left: calc(50% - 218px/2);
+    top: 17px;
+    background: rgba(255, 255, 255, 0.05);
+    filter: blur(50px);
+    z-index: 1;
+}
+
+.nft-image {
+    position: absolute;
+    width: 218px;
+    height: 218px;
+    left: calc(50% - 218px/2);
+    top: 17px;
+    z-index: 2;
+}
+
+/* Стили для каждого кубка */
+.player-card:nth-child(1) .nft-image img {
+    position: absolute;
+    width: 150.47px;
+    height: 191px;
+    left: calc(50% - 150.47px/2);
+    top: 20px;
     object-fit: contain;
-    filter: drop-shadow(0px 0px 100px rgba(0, 0, 0, 0.5));
+}
+
+.player-card:nth-child(2) .nft-image img {
+    position: absolute;
+    width: 130.27px;
+    height: 195px;
+    left: calc(50% - 130.27px/2);
+    top: 20px;
+    object-fit: contain;
+}
+
+.player-card:nth-child(3) .nft-image img {
+    position: absolute;
+    width: 134.81px;
+    height: 207px;
+    left: calc(50% - 134.81px/2);
+    top: 10px;
+    object-fit: contain;
 }
 
 .player-info {
-    text-align: center;
-    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 12px;
+    position: absolute;
+    width: 338px;
+    height: 134px;
+    left: calc(50% - 338px/2);
+    top: 251px;
 }
 
 .wallet {
-    display: block;
-    font-size: 16px;
+    width: 338px;
+    height: 24px;
+    font-family: 'Inter';
+    font-style: normal;
     font-weight: 600;
+    font-size: 16px;
     line-height: 24px;
+    text-align: center;
     margin-bottom: 12px;
 }
 
@@ -139,16 +193,28 @@ body {
 .wallet.bronze { color: #D27B21; }
 
 .score {
-    display: block;
-    font-size: 30px;
+    width: 338px;
+    height: 38px;
+    font-family: 'Inter';
+    font-style: normal;
     font-weight: 600;
+    font-size: 30px;
     line-height: 38px;
+    text-align: center;
+    color: #FFFFFF;
     margin-bottom: 12px;
 }
 
 .player-info p {
+    width: 338px;
+    height: 48px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
     font-size: 16px;
     line-height: 24px;
+    text-align: center;
+    color: #FFFFFF;
     margin: 0;
 }
 
@@ -165,27 +231,35 @@ body {
 
 .table-headers {
     display: grid;
-    grid-template-columns: 48px 152px repeat(5, 1fr);
-    gap: 20px;
+    grid-template-columns: 48px 230px repeat(4, 1fr) 0.8fr;
+    gap: 0;
     width: 100%;
     padding: 0 8px;
     box-sizing: border-box;
     margin-bottom: 8px;
+    text-align: center;
 }
 
 .table-headers span {
-    color: #FDB022;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    font-family: 'Inter', sans-serif;
+    color: #FDB022;
+    padding: 0 10px;
+    text-align: center;
 }
 
 .table-headers span:first-child {
     grid-column: 2;
+    margin-left: 24px;
+    text-align: left;
 }
 
 .table-headers span:last-child {
     text-align: right;
+    padding-right: 20px;
 }
 
 .leaderboard-rows {
@@ -206,44 +280,61 @@ body {
     align-self: stretch;
     flex-grow: 0;
     display: grid;
-    grid-template-columns: 48px 152px repeat(5, 1fr);
-    gap: 20px;
+    grid-template-columns: 48px 230px repeat(4, 1fr) 0.8fr;
+    gap: 0;
     align-items: center;
     padding: 8px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .rank-container {
     width: 48px;
     height: 48px;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
     grid-column: 1 / 2;
+    margin: 0 auto;
+    border-radius: 50%;
 }
 
 .rank-bg {
     position: absolute;
-    top: 0;
+    width: 48px;
+    height: 48px;
     left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0;
+    background: rgba(6, 2, 19, 0.1);
+    box-shadow: inset 0px 0.995122px 1.99024px #FFFFFF, 
+                inset 0px 2.4878px 7.96098px #FF7300, 
+                inset 0px 5.97073px 7.96098px #9A89E6, 
+                inset 0px 15.922px 19.9024px #583BDC;
+    border-radius: 50%;
     z-index: 1;
 }
 
 .rank {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    left: 0;
+    top: 0;
+    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
-    color: #FFFFFF;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    position: relative;
+    color: #FFFFFF;
     z-index: 2;
+    padding: 0;
+    margin: 0;
 }
 
-.wallet {
+.leaderboard-row span {
+    margin: 0 auto;
     height: 24px;
     font-family: 'Inter';
     font-style: normal;
@@ -251,26 +342,30 @@ body {
     font-size: 16px;
     line-height: 24px;
     color: #FFFFFF;
+    width: 100%;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.wallet {
+    margin-left: 24px !important;
+    height: 24px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF !important;
     grid-column: 2 / 3;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.leaderboard-row span:not(.rank):not(.wallet) {
-    margin: 0;
-    height: 24px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: #FFFFFF;
-    text-align: left;
+    text-align: left !important;
 }
 
 .leaderboard-row span:last-child {
     text-align: right;
+    padding-right: 20px;
 }
 
 /* Pagination */
