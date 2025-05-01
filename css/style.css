@@ -4,22 +4,45 @@
     box-sizing: border-box;
 }
 
+html {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: #201103;
     width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    min-height: 100vh;
     overflow-x: hidden;
-    overflow-y: auto;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+/* Псевдоэлемент для фоновой картинки */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 800px;
+    background-image: url('../public/images/freepik-enhance-457201.png');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    z-index: -1;
+    pointer-events: none;
 }
 
 .frame {
     position: relative;
     width: 100%;
-    height: auto;
     min-height: 100vh;
+    padding-bottom: 50px;
+    margin-top: 0;
 }
 
 .main-image {
@@ -39,8 +62,9 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 800px;
     pointer-events: none;
+    z-index: -1;
 }
 
 .frame::before {
@@ -48,7 +72,7 @@ body {
 }
 
 .frame::after {
-    background: linear-gradient(180deg, rgba(32, 17, 3, 0) 0%, #201103 71%);
+    background: linear-gradient(180deg, rgba(32, 17, 3, 0) 0%, #201103 85%);
     box-shadow: 0px 24px 48px -12px rgba(15.96, 23.62, 40.04, 0.18);
 }
 

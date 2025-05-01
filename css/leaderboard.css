@@ -1,0 +1,326 @@
+/* Base styles */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Navigation */
+.main-nav {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 24px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
+    box-shadow: 0px 54px 66px rgba(79, 58, 137, 0.25) inset;
+    border-radius: 48px;
+    backdrop-filter: blur(30px);
+    z-index: 100;
+}
+
+.main-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.main-nav a {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    text-decoration: none;
+}
+
+.social-icons {
+    display: flex;
+    gap: 24px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    background: white;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 80px;
+    padding-top: 60px;
+    position: relative;
+    z-index: 2;
+}
+
+.header h1 {
+    font-size: 72px;
+    font-weight: 300;
+    line-height: 70px;
+    margin: 0 0 16px;
+}
+
+.header p {
+    font-size: 16px;
+    line-height: 24px;
+    max-width: 454px;
+    margin: 0 auto;
+}
+
+/* Top Players */
+.top-players {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.player-card {
+    flex: 1;
+    height: 417px;
+    background: rgba(6, 2, 19, 0.10);
+    box-shadow: 0px 15px 20px #583BDC inset;
+    border-radius: 64px;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    max-width: 384px;
+}
+
+.card-content {
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
+    box-shadow: 0px 108px 132px rgba(79, 58, 137, 0.25) inset;
+    border-radius: 64px;
+    backdrop-filter: blur(24px);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nft-image {
+    width: 218px;
+    height: 218px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.nft-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0px 0px 100px rgba(0, 0, 0, 0.5));
+}
+
+.player-info {
+    text-align: center;
+    padding: 0 20px;
+}
+
+.wallet {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-bottom: 12px;
+}
+
+.wallet.gold { color: #FDB022; }
+.wallet.silver { color: #98A2B3; }
+.wallet.bronze { color: #D27B21; }
+
+.score {
+    display: block;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 38px;
+    margin-bottom: 12px;
+}
+
+.player-info p {
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+}
+
+/* Leaderboard Table */
+.leaderboard-container {
+    width: 1200px;
+    margin: 80px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    gap: 8px;
+}
+
+.table-headers {
+    display: grid;
+    grid-template-columns: 48px 152px repeat(5, 1fr);
+    gap: 20px;
+    width: 100%;
+    padding: 0 8px;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+}
+
+.table-headers span {
+    color: #FDB022;
+    font-size: 16px;
+    line-height: 24px;
+    font-family: 'Inter', sans-serif;
+}
+
+.table-headers span:first-child {
+    grid-column: 2;
+}
+
+.table-headers span:last-child {
+    text-align: right;
+}
+
+.leaderboard-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.leaderboard-row {
+    width: 100%;
+    height: 64px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
+    box-shadow: inset 0px 2px 2px rgba(255, 255, 255, 0.16), inset 0px 108px 132px rgba(79, 58, 137, 0.25);
+    backdrop-filter: blur(24px);
+    border-radius: 12px;
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+    display: grid;
+    grid-template-columns: 48px 152px repeat(5, 1fr);
+    gap: 20px;
+    align-items: center;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.rank-container {
+    width: 48px;
+    height: 48px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    grid-column: 1 / 2;
+}
+
+.rank-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.rank {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #FFFFFF;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.wallet {
+    height: 24px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+    grid-column: 2 / 3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-row span:not(.rank):not(.wallet) {
+    margin: 0;
+    height: 24px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+    text-align: left;
+}
+
+.leaderboard-row span:last-child {
+    text-align: right;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 56px;
+    margin: 48px 0;
+    align-self: center;
+}
+
+.prev-btn, .next-btn {
+    width: 44px;
+    height: 44px;
+    background: #6938EF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+}
+
+.page-numbers {
+    display: flex;
+    gap: 78px;
+    align-items: center;
+}
+
+.page-numbers span {
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+}
+
+.page-numbers span.active {
+    width: 32px;
+    height: 32px;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Временно скрываем псевдоэлементы .frame для диагностики */
+.frame::before,
+.frame::after {
+    display: none !important; /* Используем !important для переопределения */
+} 

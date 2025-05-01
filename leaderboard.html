@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Memeotica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Image -->
+    <!-- <div class="background-image"></div> -->
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Rules</a></li>
+            <li><a href="#">Rewards</a></li>
+            <li><a href="vote.html">Votings</a></li>
+            <li><a href="https://memeotica.gitbook.io/memoticfun/" target="_blank">Whitepaper</a></li>
+            <li><a href="#">Roadmap</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li>
+            <li>
+                <div class="social-icons">
+                    <a href="#"><div class="icon icon-1"></div></a>
+                    <a href="#"><div class="icon icon-2"></div></a>
+                    <a href="#"><div class="icon icon-3"></div></a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Header -->
+        <div class="header">
+            <h1>Leaderboard</h1>
+            <p>Climb to the first places and get extra rewards during the competitions and special events</p>
+        </div>
+
+        <!-- Top 3 Players -->
+        <div class="top-players">
+            <!-- Silver (2nd place) -->
+            <div class="player-card">
+                <div class="card-content">
+                    <div class="nft-image">
+                        <img src="/public/images/silver.png" alt="Silver NFT">
+                    </div>
+                    <div class="player-info">
+                        <span class="wallet silver">Bqp...ad3</span>
+                        <span class="score">53 417</span>
+                        <p>Every season event will get extra lootbox and coins airdrop</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gold (1st place) -->
+            <div class="player-card">
+                <div class="card-content">
+                    <div class="nft-image">
+                        <img src="/public/images/gold.png" alt="Gold NFT">
+                    </div>
+                    <div class="player-info">
+                        <span class="wallet gold">9c2...xCV</span>
+                        <span class="score">74 393</span>
+                        <p>Every season event will get extra lootbox and coins airdrop</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bronze (3rd place) -->
+            <div class="player-card">
+                <div class="card-content">
+                    <div class="nft-image">
+                        <img src="/public/images/bronze.png" alt="Bronze NFT">
+                    </div>
+                    <div class="player-info">
+                        <span class="wallet bronze">EBU...vcF</span>
+                        <span class="score">34 584</span>
+                        <p>Every season event will get extra lootbox and coins airdrop</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-container">
+            <!-- Table Headers -->
+            <div class="table-headers">
+                <span>Wallet</span>
+                <span>Votes</span>
+                <span>Hold amount</span>
+                <span>Cards</span>
+                <span>Battle wins</span>
+                <span>Total</span>
+            </div>
+
+            <!-- Table Content -->
+            <div class="leaderboard-rows">
+                <!-- Rows will be populated by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="prev-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="page-numbers">
+                    <span class="active">1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>...</span>
+                    <span>56</span>
+                </div>
+                <button class="next-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 6L15 12L9 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/leaderboard.js"></script>
+</body>
+</html> 
