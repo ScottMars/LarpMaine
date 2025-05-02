@@ -4,62 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coming Soon - Memeotica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
+            height: 100vh;
+            width: 100%;
             font-family: 'Inter', sans-serif;
             background: #201103;
             color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
         }
 
-        .container {
-            position: relative;
-            min-height: 100vh;
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
             width: 100%;
+            padding: 16px;
+            box-sizing: border-box;
         }
 
+        /* NAVIGATION */
         .nav-container {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 16px;
-        }
-
-        .top-nav {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 10px 24px;
-            gap: 32px;
-            width: 671.8px;
-            height: 40px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
             box-shadow: inset 0px 1.5px 1.5px rgba(255, 255, 255, 0.16), inset 0px 54px 66px rgba(79, 58, 137, 0.25);
             backdrop-filter: blur(30px);
             border-radius: 48px;
+            padding: 10px 24px;
+            width: fit-content;
         }
 
-        .nav-items {
+        .nav-links {
             display: flex;
-            flex-direction: row;
             align-items: center;
             gap: 24px;
-            width: 623.8px;
-            height: 20px;
         }
 
-        .nav-items a {
+        .nav-link {
             font-weight: 500;
             font-size: 14px;
             line-height: 20px;
-            text-align: center;
             color: #FFFFFF;
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .social-icon {
@@ -67,11 +71,12 @@
             height: 20px;
         }
 
+        /* CONTENT */
         .content {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: calc(100vh - 200px);
             position: relative;
         }
 
@@ -80,7 +85,7 @@
             position: absolute;
             width: 285px;
             height: 285px;
-            left: calc(50% - 285px/2 - 101.5px);
+            left: calc(50% - 285px/2 - 100px);
             top: 50%;
             transform: translateY(-50%);
             background: #A001E7;
@@ -93,7 +98,7 @@
             position: absolute;
             width: 285px;
             height: 229px;
-            left: calc(50% - 285px/2 + 127.5px);
+            left: calc(50% - 285px/2 + 130px);
             top: 50%;
             transform: translateY(-50%);
             background: #786EFF;
@@ -102,19 +107,17 @@
         }
 
         .coming-soon-image {
-            position: relative;
-            width: auto;
-            height: auto;
             max-width: 442px;
+            width: 100%;
+            height: auto;
+            position: relative;
             z-index: 1;
-            object-fit: contain;
         }
 
+        /* FOOTER */
         .footer {
-            position: absolute;
             width: 100%;
-            height: 112px;
-            bottom: 0;
+            padding-bottom: 24px;
         }
 
         .footer-line {
@@ -122,13 +125,25 @@
             height: 1px;
             background: #FFFFFF;
             opacity: 0.2;
-            margin-bottom: 48px;
+            margin-bottom: 24px;
         }
 
         .footer-content {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 150px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo img {
+            width: 32px;
+            height: 32px;
         }
 
         .footer-text {
@@ -139,169 +154,65 @@
             opacity: 0.5;
         }
 
-        .logo {
-            position: absolute;
-            width: 95.08px;
-            height: 80px;
-            top: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-        }
-
-        @media(max-width: 768px) {
-            .top-nav {
-                width: auto;
+        @media (max-width: 768px) {
+            .navbar {
                 padding: 8px 16px;
             }
             
-            .nav-items {
-                width: auto;
+            .nav-links {
+                gap: 12px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 12px;
             }
             
             .coming-soon-image {
                 max-width: 280px;
-                width: auto;
-                height: auto;
-            }
-            
-            .footer-content {
-                gap: 40px;
-                flex-direction: column;
-                align-items: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="sticky top-4 mt-4 z-40">
-            <nav>
-                <ul class="flex items-center gap-5">
-                    <li id="menu" class="flex gap-4 md:hidden">
-                        <svg class="w-5 h-5" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2.5 10H17.5M2.5 5H17.5M2.5 15H12.5" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span class="w-px block bg-white/30"></span>   
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="index.html">
-                            Home
-                        </a>
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="#">
-                            Rules
-                        </a>
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="#">
-                            Rewards
-                        </a>
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="vote.html">
-                            Voting
-                        </a>
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="https://memeotica.gitbook.io/memoticfun/" target="_blank" rel="noopener noreferrer">
-                            Whitepaper
-                        </a>
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="https://memeotica.gitbook.io/memoticfun/roadmap" target="_blank" rel="noopener noreferrer">
-                            Roadmap
-                        </a>
-                    </li>
-                    <li data-mobile-disable class="">
-                        <a class="px-1 w-full" href="leaderboard.html">
-                            Leaderboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://dexscreener.com" target="_blank" rel="noopener noreferrer">
-                            <img src="public/images/DS.png" alt="DexScreener" class="w-5 h-5">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://x.com/Memeotica_Game" target="_blank" rel="noopener noreferrer">
-                            <img src="public/images/fi-11823292.svg" alt="Telegram" class="w-5 h-5">
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://t.me/memeotica_game" target="_blank" rel="noopener noreferrer">
-                            <img src="img/twitter-x.svg" alt="Twitter X" class="w-5 h-5">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-
-        <div data-opened="false" id="drawer-menu" class="drawer">
-            <div class="drawer-overflow"></div>
-            <div class="drawer-content text-xl bg-[#2D1E11] pt-4 px-6 pb-9 rounded-t-[3rem]">
-                <button class="drawer-close absolute left-1/2 -translate-x-1/2 -top-12 flex gap-2 items-center py-1 pl-2 pr-3 rounded-full bg-[#7A5AF090]">
-                    <svg class="w-6 h-6" width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 7L7 17M7 7L17 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Close
-                </button>
-                <ul class="divide-y divide-white/10">
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="index.html">
-                            Home
-                        </a>
-                    </li>
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="#">
-                            Rules
-                        </a>
-                    </li>
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="#">
-                            Rewards
-                        </a>
-                    </li>
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="vote.html">
-                            Voting
-                        </a>
-                    </li>
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun/" target="_blank" rel="noopener noreferrer">
-                            Whitepaper
-                        </a>
-                    </li>
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun/roadmap" target="_blank" rel="noopener noreferrer">
-                            Roadmap
-                        </a>
-                    </li>
-                    <li class="">
-                        <a class="px-1 py-4 block w-full" href="leaderboard.html">
-                            Leaderboard
-                        </a>
-                    </li>
-                </ul>
+    <div class="main-container">
+        <div class="nav-container">
+            <div class="navbar">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">Rules</a>
+                    <a href="#" class="nav-link">Rewards</a>
+                    <a href="vote.html" class="nav-link">Voting</a>
+                    <a href="https://memeotica.gitbook.io/memoticfun/" target="_blank" class="nav-link">Whitepaper</a>
+                    <a href="https://memeotica.gitbook.io/memoticfun/roadmap" target="_blank" class="nav-link">Roadmap</a>
+                    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                    <a href="https://dexscreener.com" target="_blank" rel="noopener noreferrer">
+                        <img src="public/images/DS.png" alt="DexScreener" class="social-icon">
+                    </a>
+                    <a href="https://x.com/Memeotica_Game" target="_blank" rel="noopener noreferrer">
+                        <img src="public/images/fi-11823292.svg" alt="Twitter" class="social-icon">
+                    </a>
+                    <a href="https://t.me/memeotica_game" target="_blank" rel="noopener noreferrer">
+                        <img src="img/twitter-x.svg" alt="Telegram" class="social-icon">
+                    </a>
+                </div>
             </div>
         </div>
 
         <div class="content">
-            <img src="public/images/comingsoon.png" alt="Coming Soon" class="coming-soon-image" style="display: block;">
+            <img src="public/images/comingsoon.png" alt="Coming Soon" class="coming-soon-image">
         </div>
 
-        <footer class="footer">
+        <div class="footer">
             <div class="footer-line"></div>
             <div class="footer-content">
                 <span class="footer-text">Memeotica. 2025</span>
+                <div class="footer-logo">
+                    <img src="public/images/tg-image-35710798862.png" alt="Memeotica Logo">
+                </div>
                 <span class="footer-text">© All rights reserved</span>
             </div>
-        </footer>
+        </div>
     </div>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="js/index.js"></script>
-    <script type="module" src="js/mobile-menu.js"></script>
 </body>
 </html> 
