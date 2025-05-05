@@ -24,6 +24,10 @@ import { vote_data, setCookie, getCookie } from "../index.js";
     const green = document.querySelector(".green-dots-line");
 
 
+    const yes_button = document.getElementById("yes");
+    const no_button = document.getElementById("no");
+
+
     if(activeChoices) {
         const yes_cookie = getCookie("yes" + activeChoices.title);
         const no_cookie = getCookie("no" + activeChoices.title);
@@ -85,16 +89,32 @@ import { vote_data, setCookie, getCookie } from "../index.js";
             if(choice) {
                 const current_choices = Number(getCookie("choice" + activeChoices.title)) || 0;
                 if(current_choices >= 5) {
+                    no_button.disabled = true;
+                    yes_button.disabled = true;
                     return;
                 }
                 setCookie("choice" + activeChoices.title, current_choices + 1);
             }
 
+            const plus = document.createElement('div');
+                plus.textContent = '+1';
+                plus.className = 'floating-plus';
+
+
+                
+
             if(choice == "yes") {
                 yes_choice++;
+                yes_button.appendChild(plus);
+                
             } else if(choice == "no") {
                 no_choice++;
+                no_button.appendChild(plus);
             }
+
+            setTimeout(() => {
+                plus.remove();
+            }, 1000);
     
             yesQuery.innerText = yes_choice;
             noQuery.innerText = no_choice;
@@ -116,8 +136,7 @@ import { vote_data, setCookie, getCookie } from "../index.js";
         handleChoice();
 
     
-        const yes_button = document.getElementById("yes");
-        const no_button = document.getElementById("no");
+       
     
         
         yes_button.addEventListener("click", (e) => {

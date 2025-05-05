@@ -9,12 +9,13 @@ import { vote_data, setCookie, getCookie } from "../index.js";
     const winner_img = document.querySelector(".winner-image");
     const winner_name = document.querySelector(".winner-name");
     const winner_votes = document.querySelector(".winner-votes");
+    const contract_element = document.getElementById("contract");
 
     if(activeChoices) {
         console.log(activeChoices);
         const winner_data = activeChoices[activeChoices.winner];
         winner_img.setAttribute("src", winner_data.image)
-        console.log(winner_data);
+        contract_element.setAttribute('href', activeChoices.url_contract_address);
         winner_name.innerText = winner_data.name;
         winner_votes.innerText = getCookie((activeChoices.winner == "right" ? "yes" : "no") + activeChoices.title) + " VOTES";
 

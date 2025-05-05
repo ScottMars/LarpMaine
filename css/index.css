@@ -116,27 +116,23 @@ header nav {
 
 .ac-container label {
     padding: 1.25rem;
-    display: block;
+    display: flex;
+    cursor: pointer;
+    justify-content: space-between;
 }
-
-.ac-container label:hover:after,
-.ac-container input:checked + label:hover:after{
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    right: 13px;
-    top: 7px;
-    background: transparent url(http://netcribe.com/example/arrow_down.png) no-repeat center center;  
+.ac-container label svg {
+    transition: all 0.3s ease-in-out;
 }
 
 .ac-container input:checked + label {
+    cursor: default;
     color: #7A5AF8;
-}
+} 
 
-.ac-container input:checked + label:hover:after {
-    background-image: url(http://netcribe.com/example/arrow_up.png);
-}
+.ac-container input:checked + label svg {
+    transform: rotate(180deg);
+} 
+
 
 .ac-container input{
     display: none;
