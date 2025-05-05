@@ -4,18 +4,18 @@ export const vote_data = [
     {
         title: "TEST",
         left: {
-            image: "public/images/image-2.png",
+            image: "public/images/vote/ping.png",
             name: "$TOKEN",
         },
         right: {
-            image: "public/images/image-6.png",
+            image: "public/images/vote/trump.png",
             name: "$TEST",
         },
-        start_date: new Date(2025, 3, 30, 19, 30),
-        end_date: new Date(2025, 3, 30, 21, 30),
+        start_date: new Date(2025, 3, 29, 23, 40),
+        end_date: new Date(2025, 3, 29, 23, 41),
         // end_date: new Date(2025, 4, 1, 9, 46),
         winner: "left",
-        duration: new Date(2025, 4, 1, 0, 0),
+        duration: new Date(2025, 3, 29, 23, 42),
         // duration: new Date(2025, 4, 1, 12),
         choices: {
             yes: 7222,
@@ -26,11 +26,11 @@ export const vote_data = [
     {
         title: "TEST1",
         left: {
-            image: "public/images/image-6.png",
+            image: "public/images/vote/ping.png",
             name: "$TOKEN1",
         },
         right: {
-            image: "public/images/image-2.png",
+            image: "public/images/vote/trump.png",
             name: "$TEST2",
         },
         start_date: new Date(2025, 3, 29, 23, 41),
@@ -58,37 +58,3 @@ export function getCookie(name) {
         .find(row => row.startsWith(name + '='))
         ?.split('=')[1];
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Создаем попап
-    const popup = document.createElement('div');
-    popup.className = 'coming-soon-popup';
-    popup.textContent = 'Coming Soon';
-    document.body.appendChild(popup);
-
-    // Функция для показа попапа
-    function showComingSoonPopup() {
-        popup.classList.remove('hide');
-        popup.classList.add('show');
-        setTimeout(() => {
-            popup.classList.remove('show');
-            popup.classList.add('hide');
-        }, 2000);
-    }
-
-    // Обработчик кликов для кнопок без ссылок
-    document.querySelectorAll('a[href="#"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            showComingSoonPopup();
-        });
-    });
-
-    // Обработчик кликов для кнопок без href
-    document.querySelectorAll('button:not([href])').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            showComingSoonPopup();
-        });
-    });
-});

@@ -1,3 +1,4 @@
+
 .voting-results {
     display: flex;
     justify-content: center;
@@ -89,44 +90,4 @@
 .bg-vote {
     background: linear-gradient(180deg, rgba(32, 17, 3, 0) 41.97%, #201103 83.34%);
 
-}
-
-#yes, #no {
-    transition: transform 0.1s ease-in-out;
-    position: relative;
-}
-
-#yes:active:not(:disabled),
-#no:active:not(:disabled) {
-    transform: scale(0.95);
-}
-
-#yes:disabled,
-#no:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Добавляем счетчик кликов */
-#yes::after,
-#no::after {
-    content: attr(data-clicks);
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-#yes[data-clicks]:not([data-clicks="0"])::after,
-#no[data-clicks]:not([data-clicks="0"])::after {
-    opacity: 1;
 }

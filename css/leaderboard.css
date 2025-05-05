@@ -1,421 +1,105 @@
-/* Base styles */
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+
+
+tbody tr {
+    position: relative;
+    overflow: hidden;
+    
+
+}
+
+tbody tr::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 0.5rem;
+    backdrop-filter: blur(48px);
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%);
+
+box-shadow: 0px 108px 132px 0px #4F3A8940 inset,
+0px 2px 2px 0px #FFFFFF29 inset;
+}
+
+tbody td, th {
+    position: relative;
+    z-index: 10;
+    padding: 0.5rem;
+}
+
+
+.index {
+    text-align: center;
+    font-weight: bold;
     color: white;
-    overflow-x: hidden;
+    border-radius: 50%;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-block;
+    line-height: 2.25rem;
+    background: #0602131A;
+    box-shadow: 0px 15.92px 19.9px 0px #583BDC inset,
+    0px 5.97px 7.96px 0px #9A89E6 inset,
+    0px 2.49px 7.96px 0px #FF7300 inset,
+    0px 1px 1.99px 0px #FFFFFF inset;
 }
 
-/* Navigation */
-.main-nav {
-    position: fixed;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 24px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
-    box-shadow: 0px 54px 66px rgba(79, 58, 137, 0.25) inset;
-    border-radius: 48px;
-    backdrop-filter: blur(30px);
-    z-index: 100;
+@media(max-width: 768px) {
+    .index {
+        width: 2.5rem;
+        height: 2.5rem;
+        line-height: 2.5rem;
+    }
 }
 
-.main-nav ul {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+tr td:last-child, tr th:last-child {
+    text-align: right;
 }
 
-.main-nav a {
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    text-decoration: none;
-}
-
-.social-icons {
-    display: flex;
-    gap: 24px;
-}
-
-.icon {
-    width: 20px;
-    height: 20px;
-    background: white;
-}
-
-/* Header */
-.header {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 80px;
-    padding-top: 60px;
-    position: relative;
-    z-index: 2;
-}
-
-.header h1 {
-    font-size: 72px;
-    font-weight: 300;
-    line-height: 70px;
-    margin: 0 0 16px;
-}
-
-.header p {
-    font-size: 16px;
-    line-height: 24px;
-    max-width: 454px;
-    margin: 0 auto;
-}
-
-/* Top Players */
-.top-players {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0px;
-    gap: 24px;
-    position: relative;
-    width: 1200px;
-    height: 417px;
-    margin: 0 auto;
-    left: 0;
-}
-
-.player-card {
-    width: 384px;
-    height: 417px;
-    background: rgba(6, 2, 19, 0.1);
-    box-shadow: inset 0px 0.626866px 1.8806px #FFFFFF, inset 0px 5.01493px 7.52239px #9A89E6, inset 0px 15.0448px 20.0597px #583BDC;
-    backdrop-filter: blur(5.01493px);
-    border-radius: 64px;
-    flex: none;
-    flex-grow: 1;
-    position: relative;
-}
-
-.card-content {
-    position: absolute;
-    width: 96%;
-    height: 96%;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
-    box-shadow: inset 0px 3px 3px rgba(255, 255, 255, 0.16), inset 0px 108px 132px rgba(79, 58, 137, 0.25);
-    backdrop-filter: blur(24px);
-    border-radius: 64px;
-}
-
-/* Блюр эффект под кубком */
-.nft-image::before {
-    content: '';
-    position: absolute;
-    width: 218px;
-    height: 218px;
-    left: calc(50% - 218px/2);
-    top: 17px;
-    background: rgba(255, 255, 255, 0.05);
-    filter: blur(50px);
-    z-index: 1;
-}
-
-.nft-image {
-    position: absolute;
-    width: 218px;
-    height: 218px;
-    left: calc(50% - 218px/2);
-    top: 17px;
-    z-index: 2;
-}
-
-/* Стили для каждого кубка */
-.player-card:nth-child(1) .nft-image img {
-    position: absolute;
-    width: 150.47px;
-    height: 191px;
-    left: calc(50% - 150.47px/2);
-    top: 20px;
-    object-fit: contain;
-}
-
-.player-card:nth-child(2) .nft-image img {
-    position: absolute;
-    width: 130.27px;
-    height: 195px;
-    left: calc(50% - 130.27px/2);
-    top: 20px;
-    object-fit: contain;
-}
-
-.player-card:nth-child(3) .nft-image img {
-    position: absolute;
-    width: 134.81px;
-    height: 207px;
-    left: calc(50% - 134.81px/2);
-    top: 10px;
-    object-fit: contain;
-}
-
-.player-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0px;
-    gap: 12px;
-    position: absolute;
-    width: 338px;
-    height: 134px;
-    left: calc(50% - 338px/2);
-    top: 251px;
-}
-
-.wallet {
-    width: 338px;
-    height: 24px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-    margin-bottom: 12px;
-}
-
-.wallet.gold { color: #FDB022; }
-.wallet.silver { color: #98A2B3; }
-.wallet.bronze { color: #D27B21; }
-
-.score {
-    width: 338px;
-    height: 38px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 30px;
-    line-height: 38px;
-    text-align: center;
-    color: #FFFFFF;
-    margin-bottom: 12px;
-}
-
-.player-info p {
-    width: 338px;
-    height: 48px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-    color: #FFFFFF;
-    margin: 0;
-}
-
-/* Leaderboard Table */
-.leaderboard-container {
-    width: 1200px;
-    margin: 80px auto 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0;
-    gap: 8px;
-}
-
-.table-headers {
-    display: grid;
-    grid-template-columns: 48px 230px repeat(4, 1fr) 0.8fr;
-    gap: 0;
-    width: 100%;
-    padding: 0 8px;
-    box-sizing: border-box;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.table-headers span {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: #FDB022;
-    padding: 0 10px;
-    text-align: center;
-}
-
-.table-headers span:first-child {
-    grid-column: 2;
-    margin-left: 24px;
+tr td:nth-child(2), tr th:nth-child(2) {
     text-align: left;
 }
 
-.table-headers span:last-child {
-    text-align: right;
-    padding-right: 20px;
-}
+.shadow-card {
+    backdrop-filter: blur(10.029850959777832px);
 
-.leaderboard-rows {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-}
-
-.leaderboard-row {
-    width: 100%;
-    height: 64px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.02);
-    box-shadow: inset 0px 2px 2px rgba(255, 255, 255, 0.16), inset 0px 108px 132px rgba(79, 58, 137, 0.25);
-    backdrop-filter: blur(24px);
-    border-radius: 12px;
-    flex: none;
-    align-self: stretch;
-    flex-grow: 0;
-    display: grid;
-    grid-template-columns: 48px 230px repeat(4, 1fr) 0.8fr;
-    gap: 0;
-    align-items: center;
-    padding: 8px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-.rank-container {
-    width: 48px;
-    height: 48px;
-    position: relative;
-    grid-column: 1 / 2;
-    margin: 0 auto;
-    border-radius: 50%;
-}
-
-.rank-bg {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    left: 0;
-    top: 0;
-    background: rgba(6, 2, 19, 0.1);
-    box-shadow: inset 0px 0.995122px 1.99024px #FFFFFF, 
-                inset 0px 2.4878px 7.96098px #FF7300, 
-                inset 0px 5.97073px 7.96098px #9A89E6, 
-                inset 0px 15.922px 19.9024px #583BDC;
-    border-radius: 50%;
-    z-index: 1;
-}
-
-.rank {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    left: 0;
-    top: 0;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #FFFFFF;
-    z-index: 2;
-    padding: 0;
-    margin: 0;
-}
-
-.leaderboard-row span {
-    margin: 0 auto;
-    height: 24px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: #FFFFFF;
-    width: 100%;
-    text-align: center;
-    padding: 0 10px;
-}
-
-.wallet {
-    margin-left: 24px !important;
-    height: 24px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: #FFFFFF !important;
-    grid-column: 2 / 3;
-    white-space: nowrap;
+    box-shadow: 0px 15.04px 20.06px 0px #583BDC inset,
+    0px 5.01px 7.52px 0px #9A89E6 inset,
+    0px 0.63px 1.88px 0px #FFFFFF inset;
     overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: left !important;
 }
 
-.leaderboard-row span:last-child {
-    text-align: right;
-    padding-right: 20px;
-}
 
-/* Pagination */
-.pagination {
+.card-list .card {
+    border-radius: 1rem;
+    padding: 1rem;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) -2.94%, rgba(255, 255, 255, 0) 100%);
+    backdrop-filter: blur(48px);
+    box-shadow: 0px 108px 132px 0px #4F3A8940 inset,
+    0px 2px 2px 0px #FFFFFF29 inset;
+    
+    backdrop-filter: blur(48px);
+    color: white;
+}
+.card-header {
+    font-weight: bold;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 56px;
-    margin: 48px 0;
-    align-self: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ffffff10;
+}
+.card-content div:first-child  {
+    margin-top: 1rem;
 }
 
-.prev-btn, .next-btn {
-    width: 44px;
-    height: 44px;
-    background: #6938EF;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+.card-content div {
+    margin: 0.25rem 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03);
+    justify-content: space-between;
 }
 
-.page-numbers {
-    display: flex;
-    gap: 78px;
-    align-items: center;
-}
 
-.page-numbers span {
-    font-size: 16px;
-    line-height: 24px;
-    cursor: pointer;
+.card-content div span:first-child {
+    color: #AFB5D9;
 }
-
-.page-numbers span.active {
-    width: 32px;
-    height: 32px;
-    background: white;
-    color: black;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Временно скрываем псевдоэлементы .frame для диагностики */
-.frame::before,
-.frame::after {
-    display: none !important; /* Используем !important для переопределения */
-} 

@@ -6,7 +6,7 @@
     <title>Макет Frame 6</title>
     <!-- <link rel="stylesheet" href="css/style.css"> -->
     <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/leaderboard.css">
+    <link rel="stylesheet" href="css/home.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -109,75 +109,15 @@
             </ul>
         </div>
     </div>
-    <section class="  relative -translate-y-16 max-md:overflow-hidden">
-        <img src="public/images/leaderboard/welcome.svg" class=" w-full left-1/2 -translate-x-1/2 max-md:max-w-[200%] absolute inset-0">
-        <div class=" relative z-10 pt-20">
-            <img src="public/images/memoitica.svg" class=" w-72 h-64 object-cover mx-auto">
-            <h1 class=" text-5xl md:text-[4.5rem] leading-none text-center font-light">Leaderboard</h1>
-            <h2 class=" max-md:text-xl max-w-[28rem] text-center mt-4 mx-auto">Climb to the first places and get extra rewards during the competitions and special events</h2>
-        </div>
-    </section>
-    <section class=" ">
-        <div class=" content grid gap-6 text-center grid-cols-1 md:grid-cols-3">
-            <div class="px-10 py-6 pt-4  bg-[#0602131A] rounded-[4rem] shadow-card">
-                <div class=" relative">
-                    <img src="public/images/leaderboard/gold.svg" class="w-56 h-56 mx-auto relative z-10" />
-                    <img src="public/images/leaderboard/gold.svg" class="blur-[4rem] absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2" />
-                </div>
-                <div class=" relative z-10">
-                    <p class=" font-semibold max-md:text-xl text-[#FDB022] mt-5">9c2...xCV</p>
-                    <p class=" mt-4 text-2xl md:text-xl">74 393</p>
-                    <p class=" max-md:text-xl mt-3">Every season event will get extra lootbox and coins aidrop</p>
-                </div>
-            </div>
-            <div class="px-10 py-6 pt-4  bg-[#0602131A] rounded-[4rem] shadow-card">
-                <div class=" relative">
-                    <img src="public/images/leaderboard/silver.svg" class="w-56 h-56 mx-auto relative z-10" />
-                    <img src="public/images/leaderboard/silver.svg" class="blur-[4rem] absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2" />
-                </div>
-                <div class=" relative z-10">
-                    <p class=" font-semibold max-md:text-xl text-[#98A2B3] mt-5">Bqp...ad</p>
-                    <p class=" mt-4 text-2xl md:text-xl">53 417</p>
-                    <p class=" max-md:text-xl mt-3">Every season event will get extra lootbox and coins aidrop</p>
-                </div>
-            </div>
-            <div class="px-10 py-6 pt-4  bg-[#0602131A] rounded-[4rem] shadow-card">
-                <div class=" relative">
-                    <img src="public/images/leaderboard/bronze.svg" class="w-56 h-56 mx-auto relative z-10" />
-                    <img src="public/images/leaderboard/bronze.svg" class="blur-[4rem] absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2" />
-                </div>
-                <div class=" relative z-10">
-                    <p class=" font-semibold max-md:text-xl text-[#D27B21] mt-5">EBU...vcF</p>
-                    <p class=" mt-4 text-2xl md:text-xl">Compete in the Arena</p>
-                    <p class=" max-md:text-xl mt-3">Every season event will get extra lootbox and coins aidrop</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section>
-        <div class=" content mt-12">
-            <table class="border-spacing-y-2 border-separate w-full">
-                <thead class=" max-md:hidden text-[#ffa500]">
-                    <tr>
-                        <th class=" w-11 h-11"></th>
-                        <th>Wallet</th>
-                        <th>Votes</th>
-                        <th>Hold amount</th>
-                        <th>Cards</th>
-                        <th>Battle wins</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody class=" text-center" id="table-body"></tbody>
-
-            </table>
-            <div class="card-list max-md:flex max-md:flex-col max-md:gap-4 hidden" id="card-list"></div>
-            <div class="pagination mt-12" id="pagination"></div>
+        <div class=" h-[calc(100vh-16rem)] flex justify-center relative items-center">
+            <img class="md:w-[32rem] md:h-[32rem] w-80 h-80 relative z-10" src="public/images/coming/coming.svg">
+            <div class=" absolute w-56 h-56 left-1/2 blur-[10rem] bg-[#FF9D00]"></div>
+            <div class=" absolute w-56 h-56 right-1/2 blur-[10rem] bg-[#A001E7]"></div>
         </div>
     </section>
 
-    
     <footer>
         <div class=" flex content text-right max-md:text-lg justify-between md:justify-center text-white/50 gap-10 items-center border-t border-white/20 mt-14 py-4 ">
             <p class=" max-md:hidden">Memeotica. 2025</p>
@@ -190,6 +130,5 @@
     </footer>
 
     <script type="module" src="js/index.js"></script>
-    <script type="module" src="js/page/leaderboard.js"></script>
 </body>
 </html> 
