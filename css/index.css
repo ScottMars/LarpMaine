@@ -30,6 +30,22 @@ header nav {
     color: #fff;
 }
 
+header nav ul li { 
+    transition: all 150ms ease-in-out;
+}
+
+header nav ul li:hover {
+    scale: 1.05;
+}
+
+button, a {
+    transition: all 150ms ease-in-out;
+
+}
+
+button:hover, a:hover {
+    scale: 1.05;
+}
 
 
 .content {
@@ -172,7 +188,7 @@ footer {
 }
 
 
-@media(max-width: 768px) {
+@media(max-width: 767px) {
     html {
         font-size: 3vw;
     }

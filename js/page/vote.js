@@ -32,6 +32,30 @@ import { vote_data, setCookie, getCookie } from "../index.js";
         const yes_cookie = getCookie("yes" + activeChoices.title);
         const no_cookie = getCookie("no" + activeChoices.title);
 
+        setInterval(() => {
+            const randomChoice = Math.random() < 0.5 ? "yes" : "no";
+            const randomIncrement = Math.floor(Math.random() * 5) + 3;
+
+            if (randomChoice === "yes") {
+            yes_choice += randomIncrement;
+            } else {
+            no_choice += randomIncrement;
+            }
+
+            yesQuery.innerText = yes_choice;
+            noQuery.innerText = no_choice;
+
+            setCookie("yes" + activeChoices.title, yes_choice);
+            setCookie("no" + activeChoices.title, no_choice);
+
+            const left_percent = (no_choice / (no_choice + yes_choice)) * 100;
+            const right_percent = (yes_choice / (no_choice + yes_choice)) * 100;
+
+            separator.style.left = `${left_percent}%`;
+            red.style.width = `${left_percent}%`;
+            green.style.width = `calc(${right_percent}% - 1rem)`;
+        }, 2 * 1000);
+
         let yes_choice = !Number.isNaN(+yes_cookie) ? Number(yes_cookie) : activeChoices.choices.yes;
         let no_choice = !Number.isNaN(+no_cookie) ? Number(no_cookie) : activeChoices.choices.no;
         

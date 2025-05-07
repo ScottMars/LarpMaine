@@ -12,10 +12,10 @@ export const vote_data = [
             name: "$TEST",
         },
         start_date: new Date(2025, 3, 29, 23, 40),
-        end_date: new Date(2025, 4, 4, 23, 41),
+        end_date: new Date(2025, 7, 4, 23, 41),
         // end_date: new Date(2025, 4, 1, 9, 46),
         winner: "left",
-        duration: new Date(2025, 4, 5, 23, 42),
+        duration: new Date(2025, 7, 5, 23, 42),
         // duration: new Date(2025, 4, 1, 12),
         choices: {
             yes: 7222,
