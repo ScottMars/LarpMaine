@@ -33,28 +33,43 @@ import { vote_data, setCookie, getCookie } from "../index.js";
         const no_cookie = getCookie("no" + activeChoices.title);
 
         setInterval(() => {
-            const randomChoice = Math.random() < 0.5 ? "yes" : "no";
             const randomIncrement = Math.floor(Math.random() * 5) + 3;
+            // Handle potential division by zero if no_choice is 0
+            const currentRatio = no_choice === 0 ? Infinity : yes_choice / no_choice;
 
-            if (randomChoice === "yes") {
-            yes_choice += randomIncrement;
+            if (currentRatio < 3) {
+                // Force YES to increase much faster until 3x lead is reached
+                yes_choice += randomIncrement * 5; // Make YES increase faster
+                // Add a small random amount to NO to prevent it staying at 0 and allow some movement
+                no_choice += Math.floor(Math.random() * 2) + 1;
             } else {
-            no_choice += randomIncrement;
+                // Maintain lead, but allow some fluctuation (80/20 split)
+                if (Math.random() < 0.8) {
+                     yes_choice += randomIncrement;
+                } else {
+                     no_choice += randomIncrement;
+                }
             }
 
+            // Update UI and cookies
             yesQuery.innerText = yes_choice;
             noQuery.innerText = no_choice;
 
             setCookie("yes" + activeChoices.title, yes_choice);
             setCookie("no" + activeChoices.title, no_choice);
 
-            const left_percent = (no_choice / (no_choice + yes_choice)) * 100;
-            const right_percent = (yes_choice / (no_choice + yes_choice)) * 100;
+            const total_choices = no_choice + yes_choice;
+            // Avoid division by zero if total_choices is 0
+            const left_percent = total_choices === 0 ? 50 : (no_choice / total_choices) * 100;
+            const right_percent = total_choices === 0 ? 50 : (yes_choice / total_choices) * 100;
+
 
             separator.style.left = `${left_percent}%`;
             red.style.width = `${left_percent}%`;
+            // Adjust green width calculation slightly to prevent potential overlap issues at edges
             green.style.width = `calc(${right_percent}% - 1rem)`;
-        }, 2 * 1000);
+
+        }, 2 * 1000); // Keep the 2-second interval
 
         let yes_choice = !Number.isNaN(+yes_cookie) ? Number(yes_cookie) : activeChoices.choices.yes;
         let no_choice = !Number.isNaN(+no_cookie) ? Number(no_cookie) : activeChoices.choices.no;
