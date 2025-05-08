@@ -21,7 +21,7 @@ export const vote_data = [
             yes: 1000,
             no: 200,
         },
-        url_contract_address: "https://dexscreener.com/solana/c3heoibwwjs2pfgqlbge9hdfs1ku7wujixyfvpjtaq3f",
+        url_contract_address: "https://dexscreener.com/solana/9pu3vmlj4dx5gprugdyibb9oh1ulf7rmwpjcfmwzz82e",
     },
 
     {
