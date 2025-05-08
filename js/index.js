@@ -9,7 +9,7 @@ export const vote_data = [
         },
         right: {
             image: "public/images/vote/trump.png",
-            name: "Yes, US will acquire Greenland",
+            name: "Yes, US will acquire Greenland and rename to PumplandÍ",
         },
         start_date: new Date(2025, 4, 8, 0, 0),
         end_date: new Date(2025, 4, 8, 18, 0),
