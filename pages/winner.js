@@ -216,7 +216,7 @@ export default function WinnerPage() {
                                 </svg>
                                 Coin launched
                             </div>
-                            <a href={voteData.contract_address || '#'} target="_blank" rel="noopener noreferrer" className="block mt-1 text-sm text-gray-400 hover:underline">Contract Address</a>
+                            <a href={voteData.url_contract_address || '#'} target="_blank" rel="noopener noreferrer" className="block mt-1 text-sm text-gray-400 hover:underline">Contract Address</a>
                         </div>
                         <div className="flex flex-col items-center mt-12 mb-16"> {/* Добавляем mt-12 */}
                             <p className="text-3xl font-medium" id="countdown">{countdown}</p>
