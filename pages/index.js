@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link'; // Для внутренних ссылок
 import Head from 'next/head'; // Для управления <head>
+import Script from 'next/script'; // Для подключения Tailwind CSS
 import { useRouter } from 'next/router'; // Для программного редиректа
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 // Это базовый компонент главной страницы.
 // Вам нужно будет перенести сюда HTML-структуру из вашего index.html
@@ -157,6 +159,7 @@ export default function HomePage() {
     const [countdown, setCountdown] = useState('');
     const countdownIntervalRef = useRef(null);
     const router = useRouter();
+    const { setVisible } = useWalletModal();
 
     // Функция для загрузки обоих типов данных
     const fetchAllVoteData = async () => {
@@ -292,11 +295,18 @@ export default function HomePage() {
 
     // Определение, что показывать в блоке "призыва к действию"
     const renderCallToAction = () => {
-        // Всегда возвращаем кнопку "Enter the Arena"
         return (
-            <Link href="/vote" className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg mx-auto w-fit block mt-6">
-                Enter the Arena
-            </Link>
+            <div className="flex flex-col items-center space-y-4 md:space-y-0 md:flex-row md:space-x-4 md:justify-center">
+                <Link href="/vote" className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg w-fit block">
+                    Enter the Arena
+                </Link>
+                <button
+                    onClick={() => setVisible(true)}
+                    className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg w-fit block text-white"
+                >
+                    Connect your wallet
+                </button>
+            </div>
         );
     };
 
@@ -308,13 +318,11 @@ export default function HomePage() {
                 <meta charSet="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
                 <title>Memeotica</title>
-                <link rel="icon" type="image/png" href="/images/Favicon memeotica.png" /> { /* Обновленный путь */}
-                {/* Google Fonts и Tailwind CDN пока остаются, но лучше перенести/установить */}
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
-                <script src="https://cdn.tailwindcss.com"></script>
+                {/* Favicon и Google Fonts перенесены в pages/_document.js */}
             </Head>
+
+            {/* Подключаем Tailwind CSS через next/script */}
+            <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
 
             {/* Передаем состояние и функцию для управления drawer в Header */}
             <Header isDrawerOpen={isDrawerOpen} setDrawerOpen={setDrawerOpen} />
