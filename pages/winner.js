@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 // Временные компоненты Header и DrawerMenu (можно вынести в отдельные файлы)
-const Header = () => (
+const Header = ({ onMenuOpen }) => (
     <header className=" sticky top-4 mt-4 z-40">
         <nav>
             <ul className=" flex items-center gap-10">
-                <li id="menu" className="flex gap-4 md:hidden">
+                <li id="menu" className="flex gap-4 md:hidden" onClick={onMenuOpen}>
                     {/* SVG иконка меню */}
                     <svg className=" w-5 h-5" width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.5 10H17.5M2.5 5H17.5M2.5 15H12.5" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
@@ -31,11 +31,20 @@ const Header = () => (
     </header>
 );
 
-const DrawerMenu = () => (
-    <div data-opened="false" id="drawer-menu" className="drawer fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 md:hidden">
-        <div className="drawer-overflow absolute inset-0 bg-black/50"></div>
-        <div className=" drawer-content absolute bottom-0 left-0 right-0 text-xl bg-[#2D1E11] pt-4 px-6 pb-9 rounded-t-[3rem] transform translate-y-full transition-transform duration-300">
-            <button className=" drawer-close absolute left-1/2 -translate-x-1/2 -top-12 flex gap-2 items-center py-1 pl-2 pr-3 rounded-full bg-[#7A5AF090]">
+const DrawerMenu = ({ isOpen, onClose }) => (
+    <div 
+        data-opened={isOpen} 
+        id="drawer-menu" 
+        className={`drawer fixed inset-0 z-50 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+    >
+        <div className="drawer-overflow absolute inset-0 bg-black/50" onClick={onClose}></div>
+        <div 
+            className={`drawer-content absolute bottom-0 left-0 right-0 text-xl bg-[#2D1E11] pt-4 px-6 pb-9 rounded-t-[3rem] transform transition-transform duration-300 ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
+        >
+            <button 
+                className=" drawer-close absolute left-1/2 -translate-x-1/2 -top-12 flex gap-2 items-center py-1 pl-2 pr-3 rounded-full bg-[#7A5AF090]"
+                onClick={onClose}
+            >
                 {/* SVG иконка закрытия */}
                 <svg className="w-6 h-6" width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 7L7 17M7 7L17 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -83,8 +92,12 @@ export default function WinnerPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [countdown, setCountdown] = useState('');
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Состояние для меню
     const router = useRouter();
     const { voteId } = router.query;
+
+    const handleMenuOpen = () => setIsDrawerOpen(true);
+    const handleMenuClose = () => setIsDrawerOpen(false);
 
     // Эффект для загрузки данных голосования по voteId
     useEffect(() => {
@@ -192,8 +205,8 @@ export default function WinnerPage() {
                 <link rel="icon" type="image/png" href="/images/Favicon memeotica.png" />
             </Head>
 
-            <Header />
-            <DrawerMenu />
+            <Header onMenuOpen={handleMenuOpen} />
+            <DrawerMenu isOpen={isDrawerOpen} onClose={handleMenuClose} />
 
             <main className="min-h-screen"> {/* Добавил min-h-screen для лучшего вида при ошибках */}
                 {loading && <p className="text-center text-xl mt-10">Loading winner data...</p>}

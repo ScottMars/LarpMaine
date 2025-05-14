@@ -1,4 +1,4 @@
-import "./drawer.js";
+// import "./drawer.js";
 
 let currentVoteData = null;
 let nextFetchTimeout = null;

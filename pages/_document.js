@@ -6,10 +6,10 @@ export default function Document() {
     <Html lang="ru">
       <Head>
         {/* Стили, которые мы переносим из _app.js */}
-        <link rel="stylesheet" href="/css/index.css" />
-        <link rel="stylesheet" href="/css/home.css" />
-        <link rel="stylesheet" href="/css/vote.css" />
-        <link rel="stylesheet" href="/css/winner.css" />
+        {/* <link rel="stylesheet" href="/css/index.css" /> */}
+        {/* <link rel="stylesheet" href="/css/home.css" /> */}
+        {/* <link rel="stylesheet" href="/css/vote.css" /> */}
+        {/* <link rel="stylesheet" href="/css/winner.css" /> */}
         
         {/* Favicon (убедитесь, что путь корректен относительно директории public) */}
         <link rel="icon" type="image/png" href="/images/Favicon memeotica.png" /> 

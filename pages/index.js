@@ -370,8 +370,8 @@ export default function HomePage() {
                      {/* Карточка 3 */}
                      <div className="p-6 pt-4 transition-all hover:-translate-y-5 bg-[#0602131A] rounded-[4rem] shadow-card">
                         <div className="relative">
-                            <img src="/images/home/reward.png" className="w-56 h-56 mx-auto relative z-10" alt="Reward"/>
-                            <img src="/images/home/reward.png" className="blur-[4rem] absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2" aria-hidden="true" alt=""/>
+                            <img src="/images/reward.png" className="w-56 h-56 mx-auto relative z-10" alt="Reward"/>
+                            <img src="/images/reward.png" className="blur-[4rem] absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2" aria-hidden="true" alt=""/>
                         </div>
                         <div className="relative z-10">
                             <p className="mt-4 text-2xl md:text-xl">Earn $MEMO & Rewards</p>
