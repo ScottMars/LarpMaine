@@ -221,7 +221,23 @@ export default function WinnerPage() {
                                 </svg>
                                 Coin launched
                             </div>
-                            <a href={voteData.url_contract_address || '#'} target="_blank" rel="noopener noreferrer" className="block mt-1 text-sm text-gray-400 hover:underline">Contract Address</a>
+                            <button
+                                onClick={() => {
+                                    // Логируем значение прямо перед попыткой открыть
+                                    console.log("Button click: voteData.url_contract_address:", voteData && voteData.url_contract_address);
+                                    if (voteData && voteData.url_contract_address) {
+                                        window.open(voteData.url_contract_address, '_blank', 'noopener,noreferrer');
+                                    } else {
+                                        console.error("WinnerPage: Contract address not available on button click.");
+                                        // Можно добавить alert для пользователя, если это важно
+                                        // alert("Contract address is currently unavailable.");
+                                    }
+                                }}
+                                className="inline-block mt-1 text-sm text-gray-400 hover:underline cursor-pointer bg-transparent border-none p-0 focus:outline-none"
+                                type="button"
+                            >
+                                Contract Address
+                            </button>
                         </div>
                         <div className="flex flex-col items-center mt-12 mb-16"> {/* Добавляем mt-12 */}
                             <p className="text-3xl font-medium" id="countdown">{countdown}</p>
