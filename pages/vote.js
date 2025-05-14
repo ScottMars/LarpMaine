@@ -85,12 +85,14 @@ function DrawerMenu({ isOpen, onClose }) {
 export default function VotePage() {
   const router = useRouter();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const [currentVote, setCurrentVote] = useState(null);
+  const [currentVote, setCurrentVote] = useState(null); // Will now store user_vote_count, remaining_votes, max_votes_per_user
   const [timeLeft, setTimeLeft] = useState(0); // В секундах
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmittingVote, setIsSubmittingVote] = useState(false); // Vote submission loading
   const [error, setError] = useState(null);
+  const [voteMessage, setVoteMessage] = useState(''); // For success/error messages on vote action
   const [showWalletPopup, setShowWalletPopup] = useState(false); // Состояние для попапа
-  const { connected } = useWallet(); // Получаем статус подключения
+  const { connected, publicKey } = useWallet(); // Получаем статус подключения и publicKey
 
   // Состояния для анимации SVG таймера
   const [circumference, setCircumference] = useState(0);
@@ -104,13 +106,21 @@ export default function VotePage() {
   const fetchVoteStatus = async () => {
       setIsLoading(true);
       setError(null);
-      setCurrentVote(null); // Сбрасываем текущее голосование перед проверкой
+      // setCurrentVote(null); // Сбрасываем текущее голосование перед проверкой -  Let's keep currentVote to avoid UI flicker if only user counts change
 
       try {
+          let apiUrl = '/api/next-vote';
+          if (connected && publicKey) {
+              apiUrl += `?wallet_address=${publicKey.toBase58()}`;
+              console.log("VotePage: Wallet connected, fetching with address:", publicKey.toBase58());
+          } else {
+              console.log("VotePage: Wallet not connected or public key not available.");
+          }
+
           // --- Этап 1: Проверка активного или предстоящего голосования --- 
-          console.log("VotePage: Fetching /api/next-vote...");
-          const nextVoteResponse = await fetch('/api/next-vote');
-          console.log(`VotePage: /api/next-vote status: ${nextVoteResponse.status}`);
+          console.log(`VotePage: Fetching ${apiUrl}...`);
+          const nextVoteResponse = await fetch(apiUrl);
+          console.log(`VotePage: ${apiUrl} status: ${nextVoteResponse.status}`);
 
           if (nextVoteResponse.ok) {
               const data = await nextVoteResponse.json();
@@ -122,12 +132,13 @@ export default function VotePage() {
 
                   // 1. Голосование активно?
                   if (now >= startDate && now < endDate) {
-                      console.log("VotePage: Active vote found.");
+                      console.log("VotePage: Active vote found.", data);
                       setCurrentVote({
                           ...data,
                           start_date: startDate,
                           end_date: endDate,
-                          display_until_date: displayUntilDate
+                          display_until_date: displayUntilDate,
+                          // user_vote_count, remaining_votes, max_votes_per_user are now part of 'data'
                       });
                       const remaining = Math.max(0, Math.floor((endDate - now) / 1000));
                       setTimeLeft(remaining);
@@ -231,7 +242,13 @@ export default function VotePage() {
       // clearTimeout(nextFetchTimeoutRef.current); // Больше не используется
       clearInterval(timerIntervalRef.current);
     };
-  }, []);
+  }, []); // Initial load
+
+  // Refetch vote status if wallet connection status or public key changes
+  useEffect(() => {
+    console.log("VotePage: Wallet connection or publicKey changed. Refetching vote status.");
+    fetchVoteStatus();
+  }, [connected, publicKey]);
 
   // Эффект для таймера
   useEffect(() => {
@@ -271,22 +288,75 @@ export default function VotePage() {
   };
 
   // Обработчики голосования
-  const handleVote = (choice) => {
-      if (!currentVote) return;
-
-      if (!connected) {
-          setShowWalletPopup(true); // Показываем попап, если кошелек не подключен
+  const handleVote = async (choice) => {
+      setVoteMessage(''); // Clear previous messages
+      if (!currentVote || !publicKey) {
+          if (!connected) {
+              setShowWalletPopup(true); 
+          } else {
+              setVoteMessage("Public key not available. Please reconnect wallet.");
+          }
           return;
       }
 
-      // Если кошелек подключен, продолжаем логику голосования
-      console.log(`Проголосовали: ${choice} за ${currentVote.title}`);
-      // TODO: 
-      // 1. Проверить лимиты голосов (если нужно, через cookie или API)
-      // 2. Отправить голос на бэкенд (POST /api/submit-vote)
-      // 3. Обработать ответ (успех/ошибка)
-      // 4. Обновить UI (возможно, показать сообщение, обновить счетчики, если они реалтайм)
-      // 5. Добавить анимацию +1 (можно через state и CSS)
+      if (currentVote.remaining_votes <= 0) {
+          setVoteMessage("You have no votes left for this poll.");
+          return;
+      }
+
+      if (timeLeft <= 0) {
+          setVoteMessage("Voting has ended for this poll.");
+          return;
+      }
+
+      setIsSubmittingVote(true);
+      try {
+          console.log(`Submitting vote: ${choice} for ${currentVote.title} (ID: ${currentVote.id}) by ${publicKey.toBase58()}`);
+          
+          const response = await fetch('/api/submit-vote', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  vote_id: currentVote.id,
+                  wallet_address: publicKey.toBase58(),
+                  choice: choice,
+              }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+              setVoteMessage(`Vote for '${choice.toUpperCase()}' recorded successfully!`);
+              // Optimistically update UI slightly, but rely on fetchVoteStatus for truth
+              setCurrentVote(prev => ({
+                  ...prev,
+                  choices_yes: choice === 'yes' ? (prev.choices_yes || 0) + 1 : prev.choices_yes,
+                  choices_no: choice === 'no' ? (prev.choices_no || 0) + 1 : prev.choices_no,
+                  user_vote_count: result.new_total_user_votes || (prev.user_vote_count || 0) + 1,
+                  remaining_votes: prev.max_votes_per_user - (result.new_total_user_votes || (prev.user_vote_count || 0) + 1),
+              }));
+              // Fetch the latest status to ensure data consistency including all vote counts and user's remaining votes
+              await fetchVoteStatus(); 
+          } else {
+              console.error("Vote submission error:", result);
+              setVoteMessage(result.message || "Failed to submit vote.");
+              if (response.status === 403) { // Vote limit reached
+                  // Ensure UI reflects no remaining votes if server confirms it
+                  setCurrentVote(prev => ({
+                      ...prev,
+                      user_vote_count: result.current_votes !== undefined ? result.current_votes : prev.user_vote_count,
+                      remaining_votes: 0 
+                  }));
+              }
+          }
+      } catch (err) {
+          console.error("Error during handleVote:", err);
+          setVoteMessage("An unexpected error occurred while submitting your vote.");
+      } finally {
+          setIsSubmittingVote(false);
+      }
   };
 
   // Вычисление процентов для прогресс-бара (пока на основе данных из currentVote)
@@ -362,17 +432,33 @@ export default function VotePage() {
           <> 
             <section className="content-grid-vote pt-10 pb-20"> {/* Используем новый класс для грида */}
                 <h1 id="title" className="title text-center text-4xl font-light mt-7">{currentVote.title}</h1>
+                
+                {/* Display remaining votes */} 
+                {connected && typeof currentVote.user_vote_count !== 'undefined' && (
+                    <p className="text-center text-lg mt-3 mb-3 text-yellow-400">
+                        Votes Cast: {currentVote.user_vote_count} / {currentVote.max_votes_per_user}
+                        {currentVote.remaining_votes > 0 && ` (Remaining: ${currentVote.remaining_votes})`}
+                        {currentVote.remaining_votes <= 0 && " (No votes remaining)"}
+                    </p>
+                )}
+                {voteMessage && (
+                    <p className={`text-center mt-2 mb-2 ${voteMessage.includes("success") ? 'text-green-400' : 'text-red-400'}`}>
+                        {voteMessage}
+                    </p>
+                )}
+
                 <div className="flex content flex-col "> {/* Убедимся что content здесь не конфликтует с grid */}
                     {/* Кнопки и мобильные имена */} 
-                    <div className="max-md:order-2 flex gap-10 md:gap-20 items-center font-semibold mt-16 md:justify-center">
+                    <div className="max-md:order-2 flex gap-10 md:gap-20 items-center font-semibold mt-8 md:justify-center">
                         <div className=" max-md:w-full max-md:flex flex-col items-center md:items-end">
                              {/* Имя слева для мобильных */} 
                              <p className="w-2/3 left-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.left_name}</p>
                             <button 
                                 id="no" 
                                 onClick={() => handleVote('no')} 
-                                className={`bg-[#F04438] py-2.5 px-14 relative max-md:w-2/3 rounded-lg ${!connected ? 'opacity-70 cursor-not-allowed' : 'hover:bg-red-700'} ${timeLeft <= 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
-                                disabled={timeLeft <= 0} // Дизейблим только если время вышло
+                                className={`bg-[#F04438] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
+                                    ${(!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
+                                disabled={!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
                             >
                                 NO
                             </button>
@@ -383,8 +469,9 @@ export default function VotePage() {
                             <button 
                                 id="yes" 
                                 onClick={() => handleVote('yes')} 
-                                className={`bg-[#039855] py-2.5 px-14 relative max-md:w-2/3 rounded-lg ${!connected ? 'opacity-70 cursor-not-allowed' : 'hover:bg-green-700'} ${timeLeft <= 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
-                                disabled={timeLeft <= 0} // Дизейблим только если время вышло
+                                className={`bg-[#039855] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
+                                    ${(!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`}
+                                disabled={!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
                             >
                                 YES
                             </button>
