@@ -94,6 +94,8 @@ export default function VotePage() {
   const [showWalletPopup, setShowWalletPopup] = useState(false); // Состояние для попапа
   const { connected, publicKey } = useWallet(); // Получаем статус подключения и publicKey
 
+  console.log("VotePage Init/Re-render:", { connected, publicKey: publicKey ? publicKey.toBase58() : null });
+
   // Состояния для анимации SVG таймера
   const [circumference, setCircumference] = useState(0);
   const [dashOffset, setDashOffset] = useState(0);
@@ -104,6 +106,7 @@ export default function VotePage() {
 
   // Функция для загрузки статуса голосования (активное/предстоящее или редирект на результаты)
   const fetchVoteStatus = async () => {
+      console.log("VotePage: fetchVoteStatus called. Current state:", { connected, publicKey: publicKey ? publicKey.toBase58() : null });
       setIsLoading(true);
       setError(null);
       // setCurrentVote(null); // Сбрасываем текущее голосование перед проверкой -  Let's keep currentVote to avoid UI flicker if only user counts change
@@ -112,9 +115,9 @@ export default function VotePage() {
           let apiUrl = '/api/next-vote';
           if (connected && publicKey) {
               apiUrl += `?wallet_address=${publicKey.toBase58()}`;
-              console.log("VotePage: Wallet connected, fetching with address:", publicKey.toBase58());
+              console.log("VotePage: Wallet connected for fetch, using apiUrl:", apiUrl);
           } else {
-              console.log("VotePage: Wallet not connected or public key not available.");
+              console.log("VotePage: Wallet not connected or publicKey not available for fetch. Using apiUrl:", apiUrl);
           }
 
           // --- Этап 1: Проверка активного или предстоящего голосования --- 
@@ -124,6 +127,7 @@ export default function VotePage() {
 
           if (nextVoteResponse.ok) {
               const data = await nextVoteResponse.json();
+              console.log("VotePage: Data from /api/next-vote:", data);
               if (data && Object.keys(data).length > 0) {
                   const startDate = new Date(data.start_date);
                   const endDate = new Date(data.end_date);
@@ -236,19 +240,20 @@ export default function VotePage() {
 
   // Загрузка данных при монтировании
   useEffect(() => {
-    fetchVoteStatus(); // Вызываем новую функцию
+    // Initial fetch
+    // fetchVoteStatus(); // This will be covered by the [connected, publicKey] effect on initial load if wallet is already connected or not.
     setCircumference(2 * Math.PI * radius);
     return () => {
       // clearTimeout(nextFetchTimeoutRef.current); // Больше не используется
       clearInterval(timerIntervalRef.current);
     };
-  }, []); // Initial load
+  }, [radius]); // Added radius to dependency array as it's used in effect, though it's a constant here.
 
-  // Refetch vote status if wallet connection status or public key changes
+  // Refetch vote status if wallet connection status or public key changes, or on initial mount
   useEffect(() => {
-    console.log("VotePage: Wallet connection or publicKey changed. Refetching vote status.");
+    console.log("VotePage: Wallet Effect Triggered (connected or publicKey changed or initial mount). Fetching status.", { connected, publicKey: publicKey ? publicKey.toBase58() : null });
     fetchVoteStatus();
-  }, [connected, publicKey]);
+  }, [connected, publicKey]); // publicKey itself is an object, so it might cause re-runs if not stable. Rely on its properties if issues persist.
 
   // Эффект для таймера
   useEffect(() => {
@@ -289,25 +294,41 @@ export default function VotePage() {
 
   // Обработчики голосования
   const handleVote = async (choice) => {
-      setVoteMessage(''); // Clear previous messages
+      setVoteMessage(''); 
+      console.log("VotePage: handleVote START", { 
+          choice, 
+          connected, 
+          publicKey: publicKey ? publicKey.toBase58() : null, 
+          currentVoteId: currentVote ? currentVote.id : null,
+          remaining_votes: currentVote ? currentVote.remaining_votes : 'N/A',
+          timeLeft 
+      });
+
       if (!currentVote || !publicKey) {
+          console.log("VotePage: handleVote PRE-SUBMIT CHECK FAIL - !currentVote || !publicKey", { currentVoteExists: !!currentVote, publicKeyExists: !!publicKey });
           if (!connected) {
-              setShowWalletPopup(true); 
+             setVoteMessage("Wallet not connected. Please connect to vote."); // Should ideally not happen if UI hides buttons
           } else {
               setVoteMessage("Public key not available. Please reconnect wallet.");
           }
           return;
       }
 
+      console.log("VotePage: handleVote - Passed publicKey and currentVote check.");
+
       if (currentVote.remaining_votes <= 0) {
+          console.log("VotePage: handleVote PRE-SUBMIT CHECK FAIL - remaining_votes <= 0", { remaining_votes: currentVote.remaining_votes });
           setVoteMessage("You have no votes left for this poll.");
           return;
       }
+      console.log("VotePage: handleVote - Passed remaining_votes check.");
 
       if (timeLeft <= 0) {
+          console.log("VotePage: handleVote PRE-SUBMIT CHECK FAIL - timeLeft <= 0", { timeLeft });
           setVoteMessage("Voting has ended for this poll.");
           return;
       }
+      console.log("VotePage: handleVote - Passed timeLeft check. Proceeding to submit.");
 
       setIsSubmittingVote(true);
       try {
@@ -433,118 +454,133 @@ export default function VotePage() {
             <section className="content-grid-vote pt-10 pb-20"> {/* Используем новый класс для грида */}
                 <h1 id="title" className="title text-center text-4xl font-light mt-7">{currentVote.title}</h1>
                 
-                {/* Display remaining votes */} 
-                {connected && typeof currentVote.user_vote_count !== 'undefined' && (
-                    <p className="text-center text-lg mt-3 mb-3 text-yellow-400">
-                        Votes Cast: {currentVote.user_vote_count} / {currentVote.max_votes_per_user}
-                        {currentVote.remaining_votes > 0 && ` (Remaining: ${currentVote.remaining_votes})`}
-                        {currentVote.remaining_votes <= 0 && " (No votes remaining)"}
-                    </p>
-                )}
-                {voteMessage && (
-                    <p className={`text-center mt-2 mb-2 ${voteMessage.includes("success") ? 'text-green-400' : 'text-red-400'}`}>
-                        {voteMessage}
-                    </p>
-                )}
-
-                <div className="flex content flex-col "> {/* Убедимся что content здесь не конфликтует с grid */}
-                    {/* Кнопки и мобильные имена */} 
-                    <div className="max-md:order-2 flex gap-10 md:gap-20 items-center font-semibold mt-8 md:justify-center">
-                        <div className=" max-md:w-full max-md:flex flex-col items-center md:items-end">
-                             {/* Имя слева для мобильных */} 
-                             <p className="w-2/3 left-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.left_name}</p>
-                            <button 
-                                id="no" 
-                                onClick={() => handleVote('no')} 
-                                className={`bg-[#F04438] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
-                                    ${(!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
-                                disabled={!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
-                            >
-                                NO
-                            </button>
-                        </div>
-                        <div className=" max-md:w-full max-md:flex flex-col items-center">
-                             {/* Имя справа для мобильных */} 
-                             <p className="w-2/3 right-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.right_name}</p>
-                            <button 
-                                id="yes" 
-                                onClick={() => handleVote('yes')} 
-                                className={`bg-[#039855] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
-                                    ${(!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`}
-                                disabled={!connected || timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
-                            >
-                                YES
-                            </button>
-                        </div>
+                {!connected ? (
+                    <div className="text-center mt-8 py-10">
+                        <p className="mb-6 text-xl text-yellow-400">
+                            Please connect your wallet to vote.
+                        </p>
+                        <button 
+                            onClick={() => router.push('/')} // Или используйте вашу модалку: walletModal.setVisible(true)
+                            className="px-8 py-3 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors text-lg"
+                        >
+                            Connect Wallet
+                        </button>
                     </div>
-                    
-                    {/* Изображения, таймер, десктопные имена */} 
-                    <div className="images-timer-container flex justify-around items-center mt-10 md:mt-16 relative max-md:order-1"> {/* Новый контейнер для изображений и таймера */}
-                        {/* Левый блок */} 
-                        <div className="flex flex-col items-center relative"> {/* Добавлен flex flex-col items-center для центрирования имени под картинкой */}
-                            <div className=" bg-[#FF3030] top-1/2 -translate-y-1/2 left-0 absolute blur-[6rem] md:blur-[10rem] w-48 h-48 md:w-72 md:h-72"></div> 
-                            <div className=" relative z-10">
-                                <img src={currentVote.left_image || "/images/vote/ping.png"} alt={currentVote.left_name} className="left-image max-md:max-w-[120%] md:w-auto md:h-auto w-48 h-auto max-md:-translate-x-10"/>
-                            </div>
-                            <p className="left-name hidden md:block mt-4 text-center text-xl font-semibold text-white">{currentVote.left_name}</p> {/* Добавлен text-white */} 
-                        </div>
+                ) : (
+                    <> {/* Display voting interface only if connected */} 
+                        {typeof currentVote.user_vote_count !== 'undefined' && (
+                            <p className="text-center text-lg mt-3 mb-3 text-yellow-400">
+                                Votes Cast: {currentVote.user_vote_count} / {currentVote.max_votes_per_user}
+                                {currentVote.remaining_votes > 0 && ` (Remaining: ${currentVote.remaining_votes})`}
+                                {currentVote.remaining_votes <= 0 && " (No votes remaining)"}
+                            </p>
+                        )}
+                        {voteMessage && (
+                            <p className={`text-center mt-2 mb-2 ${voteMessage.includes("success") ? 'text-green-400' : 'text-red-400'}`}>
+                                {voteMessage}
+                            </p>
+                        )}
 
-                        {/* Таймер */} 
-                        <div className="timer-wrapper relative flex justify-center items-center"> {/* Обертка для таймера */}
-                            <svg className=" h-32 w-32 md:w-64 md:h-64 -rotate-90" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
-                                <circle stroke="#444" strokeWidth="3" cx="125" cy="125" r={radius} fill="none" strokeDasharray="3 8"/>
-                                <circle 
-                                    className="circle transition-all duration-1000 linear" // linear transition
-                                    stroke="#fff" 
-                                    strokeWidth="6" 
-                                    cx="125" 
-                                    cy="125" 
-                                    r={radius} 
-                                    fill="none"
-                                    strokeDasharray={circumference}
-                                    strokeDashoffset={dashOffset} // Управляется состоянием
-                                    />
-                                <circle 
-                                    id="end-circle" 
-                                    className="end-circle transition-all duration-1000 linear" // linear transition
-                                    cx={endCirclePos.cx} // Управляется состоянием
-                                    cy={endCirclePos.cy} // Управляется состоянием
-                                    r="6" 
-                                    fill="#fff"/>
-                            </svg>
-                            <div className="absolute inset-0 flex justify-center items-center flex-col">
-                                <div className="md:text-3xl text-xl font-medium" id="countdown">{formatTime(timeLeft)}</div>
-                                <div className="text-center max-md:text-xs md:mt-2.5 text-xs md:text-base">The winning option will<br/>launch a new coin</div>
-                            </div>
-                        </div>
-
-                        {/* Правый блок */} 
-                        <div className="flex flex-col items-center relative"> {/* Добавлен flex flex-col items-center для центрирования имени под картинкой */}
-                            <div className=" bg-[#61E652] top-1/2 -translate-y-1/2 right-0 absolute blur-[6rem] md:blur-[10rem] w-48 h-48 md:w-72 md:h-72"></div> 
-                            <div className=" relative z-10">
-                                <img src={currentVote.right_image || "/images/vote/trump.png"} alt={currentVote.right_name} className="right-image max-md:max-w-[120%] md:w-auto md:h-auto w-48 h-auto max-md:translate-x-10"/>
-                            </div>
-                            <p className="right-name hidden md:block mt-4 text-center text-xl font-semibold text-white break-words max-w-xs">{currentVote.right_name}</p> {/* Добавлен text-white */} 
-                        </div>
-                    </div>
-
-                    {/* Результаты */} 
-                    <div className="results-area mt-10 md:mt-16"> {/* Новый контейнер для результатов */}
-                        <div className="results-container mx-auto md:max-w-[50%] max-w-[80%]">
-                            <div className="progress-bar">
-                                <div className="red-dots-line" style={{ width: `${progress.leftPercent}%` }}>
-                                    <div className="vote-count no-votes absolute right-0 text-[#F04438] bottom-full pr-1">{progress.noVotes}</div>
+                        <div className="flex content flex-col "> {/* Убедимся что content здесь не конфликтует с grid */}
+                            {/* Кнопки и мобильные имена */} 
+                            <div className="max-md:order-2 flex gap-10 md:gap-20 items-center font-semibold mt-8 md:justify-center">
+                                <div className=" max-md:w-full max-md:flex flex-col items-center md:items-end">
+                                     {/* Имя слева для мобильных */} 
+                                     <p className="w-2/3 left-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.left_name}</p>
+                                    <button 
+                                        id="no" 
+                                        onClick={() => handleVote('no')} 
+                                        className={`bg-[#F04438] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
+                                            ${(timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
+                                        disabled={timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
+                                    >
+                                        NO
+                                    </button>
                                 </div>
-                                <div className="vertical-separator" style={{ left: `${progress.leftPercent}%` }}>
-                                    {[...Array(5)].map((_, i) => <div key={i} className="dot"></div>)} 
-                                </div>
-                                <div className="green-dots-line" style={{ width: `calc(${progress.rightPercent}% - 0.5rem)` }}> {/* Adjusted width */} 
-                                    <div className="vote-count yes-votes absolute left-0 text-[#12B76A] bottom-full pl-1">{progress.yesVotes}</div>
+                                <div className=" max-md:w-full max-md:flex flex-col items-center">
+                                     {/* Имя справа для мобильных */} 
+                                     <p className="w-2/3 right-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.right_name}</p>
+                                    <button 
+                                        id="yes" 
+                                        onClick={() => handleVote('yes')} 
+                                        className={`bg-[#039855] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
+                                            ${(timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`}
+                                        disabled={timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
+                                    >
+                                        YES
+                                    </button>
                                 </div>
                             </div>
+                            
+                            {/* Изображения, таймер, десктопные имена */} 
+                            <div className="images-timer-container flex justify-around items-center mt-10 md:mt-16 relative max-md:order-1"> {/* Новый контейнер для изображений и таймера */}
+                                {/* Левый блок */} 
+                                <div className="flex flex-col items-center relative"> {/* Добавлен flex flex-col items-center для центрирования имени под картинкой */}
+                                    <div className=" bg-[#FF3030] top-1/2 -translate-y-1/2 left-0 absolute blur-[6rem] md:blur-[10rem] w-48 h-48 md:w-72 md:h-72"></div> 
+                                    <div className=" relative z-10">
+                                        <img src={currentVote.left_image || "/images/vote/ping.png"} alt={currentVote.left_name} className="left-image max-md:max-w-[120%] md:w-auto md:h-auto w-48 h-auto max-md:-translate-x-10"/>
+                                    </div>
+                                    <p className="left-name hidden md:block mt-4 text-center text-xl font-semibold text-white">{currentVote.left_name}</p> {/* Добавлен text-white */} 
+                                </div>
+
+                                {/* Таймер */} 
+                                <div className="timer-wrapper relative flex justify-center items-center"> {/* Обертка для таймера */}
+                                    <svg className=" h-32 w-32 md:w-64 md:h-64 -rotate-90" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+                                        <circle stroke="#444" strokeWidth="3" cx="125" cy="125" r={radius} fill="none" strokeDasharray="3 8"/>
+                                        <circle 
+                                            className="circle transition-all duration-1000 linear" // linear transition
+                                            stroke="#fff" 
+                                            strokeWidth="6" 
+                                            cx="125" 
+                                            cy="125" 
+                                            r={radius} 
+                                            fill="none"
+                                            strokeDasharray={circumference}
+                                            strokeDashoffset={dashOffset} // Управляется состоянием
+                                            />
+                                        <circle 
+                                            id="end-circle" 
+                                            className="end-circle transition-all duration-1000 linear" // linear transition
+                                            cx={endCirclePos.cx} // Управляется состоянием
+                                            cy={endCirclePos.cy} // Управляется состоянием
+                                            r="6" 
+                                            fill="#fff"/>
+                                    </svg>
+                                    <div className="absolute inset-0 flex justify-center items-center flex-col">
+                                        <div className="md:text-3xl text-xl font-medium" id="countdown">{formatTime(timeLeft)}</div>
+                                        <div className="text-center max-md:text-xs md:mt-2.5 text-xs md:text-base">The winning option will<br/>launch a new coin</div>
+                                    </div>
+                                </div>
+
+                                {/* Правый блок */} 
+                                <div className="flex flex-col items-center relative"> {/* Добавлен flex flex-col items-center для центрирования имени под картинкой */}
+                                    <div className=" bg-[#61E652] top-1/2 -translate-y-1/2 right-0 absolute blur-[6rem] md:blur-[10rem] w-48 h-48 md:w-72 md:h-72"></div> 
+                                    <div className=" relative z-10">
+                                        <img src={currentVote.right_image || "/images/vote/trump.png"} alt={currentVote.right_name} className="right-image max-md:max-w-[120%] md:w-auto md:h-auto w-48 h-auto max-md:translate-x-10"/>
+                                    </div>
+                                    <p className="right-name hidden md:block mt-4 text-center text-xl font-semibold text-white break-words max-w-xs">{currentVote.right_name}</p> {/* Добавлен text-white */} 
+                                </div>
+                            </div>
+
+                            {/* Результаты */} 
+                            <div className="results-area mt-10 md:mt-16"> {/* Новый контейнер для результатов */}
+                                <div className="results-container mx-auto md:max-w-[50%] max-w-[80%]">
+                                    <div className="progress-bar">
+                                        <div className="red-dots-line" style={{ width: `${progress.leftPercent}%` }}>
+                                            <div className="vote-count no-votes absolute right-0 text-[#F04438] bottom-full pr-1">{progress.noVotes}</div>
+                                        </div>
+                                        <div className="vertical-separator" style={{ left: `${progress.leftPercent}%` }}>
+                                            {[...Array(5)].map((_, i) => <div key={i} className="dot"></div>)} 
+                                        </div>
+                                        <div className="green-dots-line" style={{ width: `calc(${progress.rightPercent}% - 0.5rem)` }}> {/* Adjusted width */} 
+                                            <div className="vote-count yes-votes absolute left-0 text-[#12B76A] bottom-full pl-1">{progress.yesVotes}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </> 
+                )} {/* End of connected check for voting UI */}
             </section>
 
             {/* Секция NFT */} 
