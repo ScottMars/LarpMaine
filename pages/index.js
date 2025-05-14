@@ -4,6 +4,7 @@ import Head from 'next/head'; // Для управления <head>
 import Script from 'next/script'; // Для подключения Tailwind CSS
 import { useRouter } from 'next/router'; // Для программного редиректа
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { useWallet } from '@solana/wallet-adapter-react'; // <-- Добавлено
 
 // Это базовый компонент главной страницы.
 // Вам нужно будет перенести сюда HTML-структуру из вашего index.html
@@ -160,6 +161,7 @@ export default function HomePage() {
     const countdownIntervalRef = useRef(null);
     const router = useRouter();
     const { setVisible } = useWalletModal();
+    const { connected, publicKey } = useWallet(); // <-- Добавлено для получения состояния кошелька
 
     // Функция для загрузки обоих типов данных
     const fetchAllVoteData = async () => {
@@ -304,7 +306,11 @@ export default function HomePage() {
                     onClick={() => setVisible(true)}
                     className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg w-fit block text-white"
                 >
-                    Connect your wallet
+                    {connected && publicKey ? (
+                        `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`
+                    ) : (
+                        'Connect your wallet'
+                    )}
                 </button>
             </div>
         );
