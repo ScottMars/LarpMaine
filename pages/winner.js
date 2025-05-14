@@ -182,6 +182,9 @@ export default function WinnerPage() {
         }
     }
 
+    // Добавим лог перед return, чтобы видеть полное состояние voteData
+    console.log("WinnerPage: Current voteData state before render:", voteData);
+
     return (
         <>
             <Head>
@@ -203,6 +206,8 @@ export default function WinnerPage() {
 
                 {voteData && !loading && !error && (
                     <>
+                        {/* Добавим лог здесь, чтобы видеть значение непосредственно перед использованием */}
+                        {console.log("WinnerPage: voteData.url_contract_address in JSX:", voteData.url_contract_address)}
                         <div className="text-center pt-10"> {/* Добавляем pt-10 как в winner.html, убираем pb-10 */}
                             <div className="mx-auto relative w-fit h-fit md:-translate-x-12">
                                 <img src={winnerImageUrl} alt={winnerName || 'Winner'} className="w-64 h-64 md:w-[32rem] md:h-[32rem] object-contain winner-image" /> {/* object-contain */}
