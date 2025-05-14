@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 // --- Предполагается, что Header и DrawerMenu вынесены в ../components/ ---
 // import Header from '../components/Header'; 
@@ -88,6 +89,9 @@ export default function VotePage() {
   const [timeLeft, setTimeLeft] = useState(0); // В секундах
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showWalletPopup, setShowWalletPopup] = useState(false); // Состояние для попапа
+  const { connected } = useWallet(); // Получаем статус подключения
+
   // Состояния для анимации SVG таймера
   const [circumference, setCircumference] = useState(0);
   const [dashOffset, setDashOffset] = useState(0);
@@ -266,9 +270,16 @@ export default function VotePage() {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
-  // Обработчики голосования (ПОКА ЗАГЛУШКИ - нужна отправка на API)
+  // Обработчики голосования
   const handleVote = (choice) => {
       if (!currentVote) return;
+
+      if (!connected) {
+          setShowWalletPopup(true); // Показываем попап, если кошелек не подключен
+          return;
+      }
+
+      // Если кошелек подключен, продолжаем логику голосования
       console.log(`Проголосовали: ${choice} за ${currentVote.title}`);
       // TODO: 
       // 1. Проверить лимиты голосов (если нужно, через cookie или API)
@@ -320,12 +331,38 @@ export default function VotePage() {
           </div>
       )}
 
+      {/* Модальное окно для подключения кошелька */}
+      {showWalletPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+              <div className="bg-[#2D1E11] p-6 md:p-8 rounded-xl shadow-xl text-white border border-yellow-400/50 max-w-md w-full">
+                  <h3 className="text-2xl font-semibold mb-6 text-yellow-400 text-center">Wallet Connection Required</h3>
+                  <p className="mb-8 text-center text-lg">
+                      To cast your vote, you need to connect your Solana wallet first.
+                  </p>
+                  <div className="flex flex-col sm:flex-row justify-center gap-4">
+                      <button 
+                          onClick={() => router.push('/')} // Переход на главную для подключения
+                          className="w-full sm:w-auto px-6 py-3 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors duration-150 text-lg"
+                      >
+                          Connect Wallet
+                      </button>
+                      <button 
+                          onClick={() => setShowWalletPopup(false)}
+                          className="w-full sm:w-auto px-6 py-3 text-yellow-500 border border-yellow-500 rounded-lg hover:bg-yellow-500 hover:text-black transition-colors duration-150 text-lg"
+                      >
+                          Cancel
+                      </button>
+                  </div>
+              </div>
+          </div>
+      )}
+
       {/* Блок активного голосования (если не загрузка, нет ошибки и есть currentVote) */} 
       {!isLoading && !error && currentVote && (
           <> 
-            <section className=" ">
-                <h1 id="title" className=" text-center text-4xl font-light mt-7">{currentVote.title}</h1>
-                <div className="flex content flex-col ">
+            <section className="content-grid-vote pt-10 pb-20"> {/* Используем новый класс для грида */}
+                <h1 id="title" className="title text-center text-4xl font-light mt-7">{currentVote.title}</h1>
+                <div className="flex content flex-col "> {/* Убедимся что content здесь не конфликтует с grid */}
                     {/* Кнопки и мобильные имена */} 
                     <div className="max-md:order-2 flex gap-10 md:gap-20 items-center font-semibold mt-16 md:justify-center">
                         <div className=" max-md:w-full max-md:flex flex-col items-center md:items-end">
@@ -334,8 +371,8 @@ export default function VotePage() {
                             <button 
                                 id="no" 
                                 onClick={() => handleVote('no')} 
-                                className=" bg-[#F04438] py-2.5 px-14 disabled:opacity-40 relative max-md:w-2/3 rounded-lg"
-                                // disabled={timeLeft <= 0} // Можно дизейблить по времени
+                                className={`bg-[#F04438] py-2.5 px-14 relative max-md:w-2/3 rounded-lg ${!connected ? 'opacity-70 cursor-not-allowed' : 'hover:bg-red-700'} ${timeLeft <= 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                                disabled={timeLeft <= 0} // Дизейблим только если время вышло
                             >
                                 NO
                             </button>
@@ -346,8 +383,8 @@ export default function VotePage() {
                             <button 
                                 id="yes" 
                                 onClick={() => handleVote('yes')} 
-                                className="bg-[#039855] py-2.5 px-14 disabled:opacity-40 relative max-md:w-2/3 rounded-lg"
-                                // disabled={timeLeft <= 0}
+                                className={`bg-[#039855] py-2.5 px-14 relative max-md:w-2/3 rounded-lg ${!connected ? 'opacity-70 cursor-not-allowed' : 'hover:bg-green-700'} ${timeLeft <= 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                                disabled={timeLeft <= 0} // Дизейблим только если время вышло
                             >
                                 YES
                             </button>
@@ -355,18 +392,18 @@ export default function VotePage() {
                     </div>
                     
                     {/* Изображения, таймер, десктопные имена */} 
-                    <div className="max-md:order-1 text-center text-lg font-bold flex justify-center items-center">
+                    <div className="images-timer-container flex justify-around items-center mt-10 md:mt-16 relative max-md:order-1"> {/* Новый контейнер для изображений и таймера */}
                         {/* Левый блок */} 
-                        <div className=" relative">
+                        <div className="flex flex-col items-center relative"> {/* Добавлен flex flex-col items-center для центрирования имени под картинкой */}
                             <div className=" bg-[#FF3030] top-1/2 -translate-y-1/2 left-0 absolute blur-[6rem] md:blur-[10rem] w-48 h-48 md:w-72 md:h-72"></div> 
                             <div className=" relative z-10">
                                 <img src={currentVote.left_image || "/images/vote/ping.png"} alt={currentVote.left_name} className="left-image max-md:max-w-[120%] md:w-auto md:h-auto w-48 h-auto max-md:-translate-x-10"/>
-                                <p className=" left-name hidden md:block mt-2">{currentVote.left_name}</p>
                             </div>
+                            <p className="left-name hidden md:block mt-4 text-center text-xl font-semibold text-white">{currentVote.left_name}</p> {/* Добавлен text-white */} 
                         </div>
 
                         {/* Таймер */} 
-                        <div className=" z-10 max-md:mt-20 relative flex-shrink-0 mx-4 md:mx-0">
+                        <div className="timer-wrapper relative flex justify-center items-center"> {/* Обертка для таймера */}
                             <svg className=" h-32 w-32 md:w-64 md:h-64 -rotate-90" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
                                 <circle stroke="#444" strokeWidth="3" cx="125" cy="125" r={radius} fill="none" strokeDasharray="3 8"/>
                                 <circle 
@@ -395,17 +432,17 @@ export default function VotePage() {
                         </div>
 
                         {/* Правый блок */} 
-                        <div className=" relative">
+                        <div className="flex flex-col items-center relative"> {/* Добавлен flex flex-col items-center для центрирования имени под картинкой */}
                             <div className=" bg-[#61E652] top-1/2 -translate-y-1/2 right-0 absolute blur-[6rem] md:blur-[10rem] w-48 h-48 md:w-72 md:h-72"></div> 
                             <div className=" relative z-10">
                                 <img src={currentVote.right_image || "/images/vote/trump.png"} alt={currentVote.right_name} className="right-image max-md:max-w-[120%] md:w-auto md:h-auto w-48 h-auto max-md:translate-x-10"/>
-                                <p className=" right-name hidden md:block mt-2 break-words max-w-xs">{currentVote.right_name}</p>
                             </div>
+                            <p className="right-name hidden md:block mt-4 text-center text-xl font-semibold text-white break-words max-w-xs">{currentVote.right_name}</p> {/* Добавлен text-white */} 
                         </div>
                     </div>
 
                     {/* Результаты */} 
-                    <div className="voting-results mt-12 md:mt-6 max-md:order-3 ">
+                    <div className="results-area mt-10 md:mt-16"> {/* Новый контейнер для результатов */}
                         <div className="results-container mx-auto md:max-w-[50%] max-w-[80%]">
                             <div className="progress-bar">
                                 <div className="red-dots-line" style={{ width: `${progress.leftPercent}%` }}>
@@ -424,7 +461,7 @@ export default function VotePage() {
             </section>
 
             {/* Секция NFT */} 
-            <section>
+            <section className="nft-section bg-fixed-wrapper"> {/* Обёртка для позиционирования фона */}
                 <div>
                     <h2 className=" mt-24 text-4xl relative z-10 font-light text-center mb-8">Collect this NFT cards during event</h2>
                     <div className="space-y-12 max-md:flex flex-wrap justify-center gap-6">
@@ -450,19 +487,24 @@ export default function VotePage() {
             </section>
 
             {/* Футер */} 
-            <footer>
-                <div className=" relative z-10 flex content text-right max-md:text-lg justify-between md:justify-center text-white/50 gap-10 items-center border-t border-white/20 mt-14 py-4 ">
-                    <p className=" max-md:hidden">Memeotica. 2025</p>
-                    <img src="/images/memoitica.svg" className="w-24 h-auto" alt="Memeotica Logo Small"/>
-                    <div className=" ">
-                        <p className="max-md:mb-2 md:hidden">Memeotica. 2025</p>
-                        <p className=" ">© All rights reserved</p>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
           </>
       )}
-
     </div>
   );
-} 
+}
+
+// --- Компонент Footer (скопировано из pages/index.js для простоты) ---
+// Позже можно вынести в /components/Footer.js
+const Footer = () => (
+    <footer>
+        <div className=" flex content text-right max-md:text-lg justify-between md:justify-center text-white/50 gap-10 items-center border-t border-white/20 mt-14 py-4 ">
+            <p className=" max-md:hidden">Memeotica. 2025</p>
+            <img src="/images/memoitica.svg" className="  w-24 h-24 " alt="Memeotica Logo" />
+            <div className=" ">
+                <p className="max-md:mb-2 md:hidden">Memeotica. 2025</p>
+                <p className=" ">© All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+); 
