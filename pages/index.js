@@ -144,6 +144,124 @@ const Footer = () => (
     </footer>
 );
 
+// --- Компонент виджета для клейма NFT ---
+function NftClaimWidget({ onClick }) {
+  return (
+    <div 
+      onClick={onClick}
+      className="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-50 cursor-pointer hover:scale-105 transition-transform duration-200"
+    >
+      <img 
+        src="/images/ClaimNFT.png" 
+        alt="Claim NFT" 
+        className="w-32 md:w-40 h-auto"
+      />
+    </div>
+  );
+}
+
+// --- Компонент модального окна для клейма NFT ---
+function NftClaimModal({ isOpen, onClose }) {
+  if (!isOpen) return null;
+
+  const [walletInput, setWalletInput] = React.useState('');
+  const [statusMessage, setStatusMessage] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleSaveWallet = async () => {
+    if (!walletInput.trim()) {
+      setStatusMessage('Пожалуйста, введите адрес кошелька.');
+      return;
+    }
+    setIsSubmitting(true);
+    setStatusMessage(''); // Сброс предыдущего сообщения
+
+    try {
+      const response = await fetch('/api/record-nft-claim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ wallet_address: walletInput }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatusMessage("Thank you. Magic will happen soon. Stay tuned! 🪄💫");
+        setWalletInput(''); // Очистить инпут после успеха
+      } else {
+        // Обработка специфичных ошибок сервера, если они есть в result.error
+        // Например, если кошелек уже существует (код 409)
+        if (response.status === 409 && result.code === '23505') {
+             setStatusMessage('Этот адрес кошелька уже был записан. Спасибо!');
+        } else {
+             setStatusMessage(result.error || 'Не удалось сохранить кошелек. Попробуйте позже.');
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка при сохранении кошелька:', error);
+      setStatusMessage('Произошла ошибка сети. Пожалуйста, проверьте ваше подключение.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Если есть сообщение об успешной отправке, не закрываем сразу, даем пользователю прочитать
+  // onClose будет вызван по клику на крестик
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100] p-4">
+      <div className="bg-[#2D1E11] p-6 md:p-8 rounded-xl shadow-xl text-white border border-yellow-400/50 max-w-md w-full relative">
+        <button
+          onClick={onClose} // Позволяем закрыть в любом состоянии
+          className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"
+          aria-label="Close modal"
+        >
+          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 7L7 17M7 7L17 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <div className="text-center">
+          <img src="/images/ClaimNFT.png" alt="Claim NFT" className="w-24 h-24 rounded-full mx-auto mb-6 border-2 border-yellow-400" />
+          
+          {statusMessage === "Thank you. Magic will happen soon. Stay tuned! 🪄💫" || (statusMessage === 'Этот адрес кошелька уже был записан. Спасибо!') ? (
+            <>
+              <h3 className="text-2xl font-semibold mb-4 text-yellow-400">Request Received!</h3>
+              <p className="mb-6 text-lg text-gray-300 whitespace-pre-line">{statusMessage}</p>
+            </>
+          ) : (
+            <>
+              <h3 className="text-2xl font-semibold mb-4 text-yellow-400">Leave your wallet for the future NFT drops.</h3>
+              <p className="mb-6 text-lg text-gray-300">
+                Get some collectible cards. Or not. Stay tuned.
+              </p>
+              <input
+                type="text"
+                value={walletInput}
+                onChange={(e) => setWalletInput(e.target.value)}
+                placeholder="Enter your Solana wallet address"
+                className="w-full px-4 py-3 mb-3 text-black bg-white border border-gray-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                disabled={isSubmitting}
+              />
+              {statusMessage && !statusMessage.startsWith("Thank you") && ( // Показываем ошибки валидации или другие ошибки
+                <p className="text-red-400 text-sm mb-3">{statusMessage}</p>
+              )}
+              <button
+                onClick={handleSaveWallet}
+                className="w-full px-6 py-3 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition-colors duration-150 text-lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving...' : 'Save Wallet'}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // --- Основной компонент страницы ---
 export default function HomePage() {
     // Состояние для следующего/активного голосования
@@ -162,6 +280,9 @@ export default function HomePage() {
     const router = useRouter();
     const { setVisible } = useWalletModal();
     const { connected, publicKey } = useWallet(); // <-- Добавлено для получения состояния кошелька
+
+    // Состояние для модального окна клейма NFT
+    const [showNftClaimModal, setShowNftClaimModal] = useState(false);
 
     // Функция для загрузки обоих типов данных
     const fetchAllVoteData = async () => {
@@ -291,9 +412,19 @@ export default function HomePage() {
             setCountdown(''); // Сбрасываем таймер, если нет цели
         }
 
-        return () => clearInterval(countdownIntervalRef.current); // Очистка при размонтировании или изменении данных
+        // Добавляем слушатель для клавиши Escape для закрытия модального окна NFT
+        const handleEsc = (event) => {
+            if (event.key === 'Escape') {
+                setShowNftClaimModal(false);
+            }
+        };
+        window.addEventListener('keydown', handleEsc);
 
-    }, [nextVoteData, lastVoteData]); // Зависим от обоих наборов данных
+        return () => {
+            clearInterval(countdownIntervalRef.current);
+            window.removeEventListener('keydown', handleEsc); // Очищаем слушатель
+        };
+    }, [nextVoteData]); // Зависимости могут потребовать уточнения, пока добавил nextVoteData
 
     // Определение, что показывать в блоке "призыва к действию"
     const renderCallToAction = () => {
@@ -318,13 +449,14 @@ export default function HomePage() {
 
     // --- JSX структура (адаптировано из index.html) ---
     return (
-        <>
+        <div className="relative min-h-screen bg-custom-gradient text-white">
             {/* Управляем <head> через Next.js */}
             <Head>
                 <meta charSet="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-                <title>Memeotica</title>
+                <title>Memeotica - Real-Time Event Voting Platform</title>
                 {/* Favicon и Google Fonts перенесены в pages/_document.js */}
+                <link rel="icon" type="image/png" href="/images/Favicon memeotica.png" />
             </Head>
 
             {/* Подключаем Tailwind CSS через next/script */}
@@ -433,6 +565,20 @@ export default function HomePage() {
 
             {/* Подключаем Footer */} 
             <Footer />
-        </>
+
+            {/* Виджет для клейма NFT */}
+            <NftClaimWidget onClick={() => setShowNftClaimModal(true)} />
+
+            {/* Модальное окно для клейма NFT */}
+            <NftClaimModal
+                isOpen={showNftClaimModal}
+                onClose={() => {
+                    setShowNftClaimModal(false);
+                    // Возможно, стоит сбрасывать сообщение при закрытии, чтобы при следующем открытии его не было
+                    // Но оставим как есть, сообщение сбросится при новой попытке сохранения или при новой инициализации компонента
+                }}
+            />
+
+        </div>
     );
 } 
