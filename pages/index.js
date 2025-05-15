@@ -299,12 +299,12 @@ export default function HomePage() {
     const renderCallToAction = () => {
         return (
             <div className="flex flex-col items-center space-y-4 md:space-y-0 md:flex-row md:space-x-4 md:justify-center">
-                <Link href="/vote" className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg w-fit block">
+                <Link href="/vote" className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg text-white transition-all duration-300 ease-in-out hover:shadow-lg w-full sm:w-auto text-center">
                     Enter the Arena
                 </Link>
                 <button
                     onClick={() => setVisible(true)}
-                    className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg w-fit block text-white"
+                    className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg text-white transition-all duration-300 ease-in-out hover:shadow-lg w-full sm:w-auto text-center"
                 >
                     {connected && publicKey ? (
                         `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`
@@ -340,13 +340,25 @@ export default function HomePage() {
                 <div className="relative z-10 pt-20">
                     <img src="/images/memoitica.svg" className="w-72 h-64 object-cover mx-auto" alt="Memeotica Logo"/>
                     <h1 className="text-5xl md:text-[4.5rem] leading-none text-center font-light">Where Politics<br /> Becomes the Game.</h1>
-                    <h2 className="max-md:text-xl max-w-[28rem] text-center mt-4 mx-auto">A Web3 strategy game where you compete in a civic arena by making predictions on political outcomes.</h2>
-
-                    {/* Динамический блок призыва к действию */} 
-                    <div className="call-to-action-container min-h-[100px]"> {/* Добавлен контейнер для стабильности высоты */} 
-                        {renderCallToAction()} 
+                    <p className="text-xl md:text-2xl max-w-xl md:max-w-2xl mx-auto mt-6 text-white/80">
+                        A Web3 strategy game where you compete in a civic arena by making predictions on political outcomes.
+                    </p>
+                    {/* Контейнер для кнопок с добавленным отступом сверху */}
+                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+                        <Link href="/vote" className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg text-white transition-all duration-300 ease-in-out hover:shadow-lg w-full sm:w-auto text-center">
+                            Enter the Arena
+                        </Link>
+                        <button
+                            onClick={() => setVisible(true)}
+                            className="max-md:text-xl font-semibold text-sm py-2.5 px-5 bg-[#6938EF] rounded-lg text-white transition-all duration-300 ease-in-out hover:shadow-lg w-full sm:w-auto text-center"
+                        >
+                            {connected && publicKey ? (
+                                `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`
+                            ) : (
+                                'Connect your wallet'
+                            )}
+                        </button>
                     </div>
-
                 </div>
             </section>
 
