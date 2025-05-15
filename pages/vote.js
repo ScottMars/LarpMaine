@@ -601,7 +601,7 @@ export default function VotePage() {
                                     <svg className=" h-32 w-32 md:w-64 md:h-64 -rotate-90" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
                                         <circle stroke="#444" strokeWidth="6" cx="125" cy="125" r={radius} fill="none" strokeDasharray="1 12"/>
                                         <circle 
-                                            className="circle transition-all duration-1000 linear" // linear transition
+                                            className="circle"
                                             stroke="#fff" 
                                             strokeWidth="6" 
                                             cx="125" 
@@ -613,7 +613,7 @@ export default function VotePage() {
                                             />
                                         <circle 
                                             id="end-circle" 
-                                            className="end-circle transition-all duration-1000 linear" // linear transition
+                                            className="end-circle"
                                             cx={endCirclePos.cx} // Управляется состоянием
                                             cy={endCirclePos.cy} // Управляется состоянием
                                             r="6" 
