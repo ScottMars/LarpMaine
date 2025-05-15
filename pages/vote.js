@@ -277,12 +277,12 @@ export default function VotePage() {
             const duration = Math.floor((currentVote.end_date - currentVote.start_date) / 1000);
             const safeDuration = duration > 0 ? duration : 1;
             const elapsed = safeDuration - newTimeLeft;
-            const offset = circumference * (elapsed / safeDuration);
+            const offset = circumference * (newTimeLeft / safeDuration);
             setDashOffset(offset);
             const angle = (elapsed / safeDuration) * 360;
             const radian = angle * (Math.PI / 180);
-            const x = 125 + radius * Math.cos(radian - Math.PI / 2);
-            const y = 125 + radius * Math.sin(radian - Math.PI / 2);
+            const x = 125 + radius * Math.cos(radian);
+            const y = 125 + radius * Math.sin(radian);
             setEndCirclePos({ cx: x, cy: y });
             
             return newTimeLeft;
@@ -599,7 +599,7 @@ export default function VotePage() {
                                 {/* Таймер */} 
                                 <div className="timer-wrapper relative flex justify-center items-center"> {/* Обертка для таймера */}
                                     <svg className=" h-32 w-32 md:w-64 md:h-64 -rotate-90" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
-                                        <circle stroke="#444" strokeWidth="3" cx="125" cy="125" r={radius} fill="none" strokeDasharray="3 8"/>
+                                        <circle stroke="#444" strokeWidth="6" cx="125" cy="125" r={radius} fill="none" strokeDasharray="1 12"/>
                                         <circle 
                                             className="circle transition-all duration-1000 linear" // linear transition
                                             stroke="#fff" 
