@@ -92,7 +92,12 @@ export default function VotePage() {
   const [error, setError] = useState(null);
   const [voteMessage, setVoteMessage] = useState(''); // For success/error messages on vote action
   const [showWalletPopup, setShowWalletPopup] = useState(false); // Состояние для попапа
+  const [showPlaceholder, setShowPlaceholder] = useState(false); // Новое состояние для заглушки
   const { connected, publicKey } = useWallet(); // Получаем статус подключения и publicKey
+
+  // Новые состояния для анимированных голосов
+  const [animatedYesVotes, setAnimatedYesVotes] = useState(0);
+  const [animatedNoVotes, setAnimatedNoVotes] = useState(0);
 
   console.log("VotePage Init/Re-render:", { connected, publicKey: publicKey ? publicKey.toBase58() : null });
 
@@ -109,6 +114,7 @@ export default function VotePage() {
       console.log("VotePage: fetchVoteStatus called. Current state:", { connected, publicKey: publicKey ? publicKey.toBase58() : null });
       setIsLoading(true);
       setError(null);
+      setShowPlaceholder(false); // Сбрасываем состояние заглушки при каждом запросе
       // setCurrentVote(null); // Сбрасываем текущее голосование перед проверкой -  Let's keep currentVote to avoid UI flicker if only user counts change
 
       try {
@@ -226,13 +232,16 @@ export default function VotePage() {
 
           // Если дошли сюда, значит ни активного, ни предстоящего, ни результатов для показа нет
           console.log("VotePage: No active/upcoming vote or results to display found (or results expired).");
-          setError("No active votes or available results.");
+          // setError("No active votes or available results."); // Заменяем на показ заглушки
           setCurrentVote(null);
+          setShowPlaceholder(true); // Показываем заглушку
+          setError(null); // Убедимся, что ошибки нет
 
       } catch (error) {
           console.error("Ошибка при определении статуса голосования:", error);
           setError(error.message || "Could not determine voting status.");
           setCurrentVote(null);
+          setShowPlaceholder(false); // Скрываем заглушку в случае ошибки
       } finally {
           setIsLoading(false);
       }
@@ -284,6 +293,43 @@ export default function VotePage() {
 
   }, [currentVote, timeLeft, circumference, radius, router]);
 
+  // Эффект для анимации счетчиков голосов
+  useEffect(() => {
+    if (currentVote && currentVote.start_date && currentVote.end_date) {
+        const startDate = new Date(currentVote.start_date);
+        const endDate = new Date(currentVote.end_date);
+        const totalPollDurationSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
+
+        if (totalPollDurationSeconds > 0 && timeLeft >= 0) {
+            const targetYes = currentVote.choices_yes || 0;
+            const targetNo = currentVote.choices_no || 0;
+
+            const elapsedSecondsSinceStart = Math.max(0, totalPollDurationSeconds - timeLeft);
+            
+            let currentAnimatedY = (targetYes / totalPollDurationSeconds) * elapsedSecondsSinceStart;
+            let currentAnimatedN = (targetNo / totalPollDurationSeconds) * elapsedSecondsSinceStart;
+
+            currentAnimatedY = Math.max(0, Math.min(currentAnimatedY, targetYes));
+            currentAnimatedN = Math.max(0, Math.min(currentAnimatedN, targetNo));
+
+            if (timeLeft === 0) {
+                setAnimatedYesVotes(targetYes);
+                setAnimatedNoVotes(targetNo);
+            } else {
+                setAnimatedYesVotes(Math.floor(currentAnimatedY));
+                setAnimatedNoVotes(Math.floor(currentAnimatedN));
+            }
+        } else if (totalPollDurationSeconds <= 0) { // Если длительность некорректна, показываем финальные значения
+             setAnimatedYesVotes(currentVote.choices_yes || 0);
+             setAnimatedNoVotes(currentVote.choices_no || 0);
+        }
+    } else {
+        // Если нет активного голосования, сбрасываем анимированные счетчики
+        setAnimatedYesVotes(0);
+        setAnimatedNoVotes(0);
+    }
+}, [currentVote, timeLeft]);
+
   // Форматирование времени для отображения
   const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
@@ -294,109 +340,127 @@ export default function VotePage() {
 
   // Обработчики голосования
   const handleVote = async (choice) => {
-      setVoteMessage(''); 
-      console.log("VotePage: handleVote START", { 
-          choice, 
-          connected, 
-          publicKey: publicKey ? publicKey.toBase58() : null, 
-          currentVoteId: currentVote ? currentVote.id : null,
-          remaining_votes: currentVote ? currentVote.remaining_votes : 'N/A',
-          timeLeft 
+    console.log("VotePage: handleVote called with choice:", choice, "Wallet connected:", connected, "Public key:", publicKey ? publicKey.toBase58() : null);
+    if (!connected || !publicKey) {
+      console.log("VotePage: Wallet not connected, showing popup.");
+      setVoteMessage("Please connect your wallet to vote.");
+      setShowWalletPopup(true);
+      return;
+    }
+
+    if (!currentVote || !currentVote.id) {
+      setError("No active vote to participate in.");
+      return;
+    }
+
+    if (currentVote.remaining_votes <= 0) {
+        setVoteMessage("You have no votes left for this poll.");
+        return;
+    }
+
+    // Добавим проверку на timeLeft, если таймер истек, голосовать нельзя
+    if (timeLeft <= 0) {
+        setVoteMessage("Voting has ended for this poll.");
+        // Можно также вызвать fetchVoteStatus, чтобы обновить UI, если голосование только что закончилось
+        // fetchVoteStatus(); 
+        return;
+    }
+
+    setIsSubmittingVote(true);
+    setVoteMessage('');
+    setError(null);
+
+    try {
+      console.log(`VotePage: Submitting vote for poll ${currentVote.id}, choice: ${choice}, wallet: ${publicKey.toBase58()}`);
+      const response = await fetch('/api/submit-vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          vote_id: currentVote.id,
+          choice: choice, // 'yes' or 'no'
+          wallet_address: publicKey.toBase58(),
+        }),
       });
 
-      if (!currentVote || !publicKey) {
-          console.log("VotePage: handleVote PRE-SUBMIT CHECK FAIL - !currentVote || !publicKey", { currentVoteExists: !!currentVote, publicKeyExists: !!publicKey });
-          if (!connected) {
-             setVoteMessage("Wallet not connected. Please connect to vote."); // Should ideally not happen if UI hides buttons
-          } else {
-              setVoteMessage("Public key not available. Please reconnect wallet.");
-          }
-          return;
+      console.log("VotePage: Submit vote response status:", response.status);
+      const responseData = await response.json();
+      console.log("VotePage: Submit vote response data:", responseData);
+
+      if (response.ok) {
+        setVoteMessage(responseData.message || "Vote submitted successfully!");
+        
+        if (responseData.updatedVote) {
+            setCurrentVote(prev => {
+                // Убедимся, что prev существует и содержит необходимые поля
+                if (!prev) {
+                    // Если prev не определен (маловероятно, но на всякий случай)
+                    // Можно попробовать использовать только responseData.updatedVote
+                    // или запросить полный статус
+                    console.warn("VotePage: prev currentVote was null during update. Re-fetching status.");
+                    fetchVoteStatus();
+                    return null;
+                }
+                return {
+                    ...prev, // Сохраняем остальные свойства, такие как title, images, dates
+                    choices_yes: responseData.updatedVote.choices_yes,
+                    choices_no: responseData.updatedVote.choices_no,
+                    user_vote_count: responseData.updatedVote.user_vote_count,
+                    remaining_votes: responseData.updatedVote.remaining_votes,
+                    max_votes_per_user: responseData.updatedVote.max_votes_per_user || prev.max_votes_per_user, // Обновляем, если пришло
+                };
+            });
+        } else {
+            // Если API по какой-то причине не вернул updatedVote, но ответил OK
+            // (например, в случае message: 'Vote recorded, but failed to fetch updated counts.')
+            // тогда делаем полный refetch, чтобы UI был консистентным.
+            console.warn("VotePage: updatedVote not present in successful response. Re-fetching status.");
+            fetchVoteStatus(); 
+        }
+      } else {
+        // Обрабатываем специфичные ошибки, если они есть в responseData
+        if (response.status === 403 && responseData.message === 'Vote limit reached for this poll.') {
+            setError(responseData.message);
+            // Обновим UI, чтобы показать, что голоса закончились, если API это подтвердил
+            setCurrentVote(prev => prev ? ({
+                ...prev,
+                user_vote_count: responseData.current_votes !== undefined ? responseData.current_votes : prev.user_vote_count,
+                remaining_votes: 0 
+            }) : null);
+        } else {
+            setError(responseData.message || responseData.error || "Failed to submit vote. Please try again.");
+        }
       }
-
-      console.log("VotePage: handleVote - Passed publicKey and currentVote check.");
-
-      if (currentVote.remaining_votes <= 0) {
-          console.log("VotePage: handleVote PRE-SUBMIT CHECK FAIL - remaining_votes <= 0", { remaining_votes: currentVote.remaining_votes });
-          setVoteMessage("You have no votes left for this poll.");
-          return;
-      }
-      console.log("VotePage: handleVote - Passed remaining_votes check.");
-
-      if (timeLeft <= 0) {
-          console.log("VotePage: handleVote PRE-SUBMIT CHECK FAIL - timeLeft <= 0", { timeLeft });
-          setVoteMessage("Voting has ended for this poll.");
-          return;
-      }
-      console.log("VotePage: handleVote - Passed timeLeft check. Proceeding to submit.");
-
-      setIsSubmittingVote(true);
-      try {
-          console.log(`Submitting vote: ${choice} for ${currentVote.title} (ID: ${currentVote.id}) by ${publicKey.toBase58()}`);
-          
-          const response = await fetch('/api/submit-vote', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  vote_id: currentVote.id,
-                  wallet_address: publicKey.toBase58(),
-                  choice: choice,
-              }),
-          });
-
-          const result = await response.json();
-
-          if (response.ok) {
-              setVoteMessage(`Vote for '${choice.toUpperCase()}' recorded successfully!`);
-              // Optimistically update UI slightly, but rely on fetchVoteStatus for truth
-              setCurrentVote(prev => ({
-                  ...prev,
-                  choices_yes: choice === 'yes' ? (prev.choices_yes || 0) + 1 : prev.choices_yes,
-                  choices_no: choice === 'no' ? (prev.choices_no || 0) + 1 : prev.choices_no,
-                  user_vote_count: result.new_total_user_votes || (prev.user_vote_count || 0) + 1,
-                  remaining_votes: prev.max_votes_per_user - (result.new_total_user_votes || (prev.user_vote_count || 0) + 1),
-              }));
-              // Fetch the latest status to ensure data consistency including all vote counts and user's remaining votes
-              await fetchVoteStatus(); 
-          } else {
-              console.error("Vote submission error:", result);
-              setVoteMessage(result.message || "Failed to submit vote.");
-              if (response.status === 403) { // Vote limit reached
-                  // Ensure UI reflects no remaining votes if server confirms it
-                  setCurrentVote(prev => ({
-                      ...prev,
-                      user_vote_count: result.current_votes !== undefined ? result.current_votes : prev.user_vote_count,
-                      remaining_votes: 0 
-                  }));
-              }
-          }
-      } catch (err) {
-          console.error("Error during handleVote:", err);
-          setVoteMessage("An unexpected error occurred while submitting your vote.");
-      } finally {
-          setIsSubmittingVote(false);
-      }
+    } catch (error) {
+      console.error("VotePage: Error submitting vote:", error);
+      setError(`Error submitting vote: ${error.message}`);
+    } finally {
+      setIsSubmittingVote(false);
+    }
   };
 
-  // Вычисление процентов для прогресс-бара (пока на основе данных из currentVote)
-  const calculateProgress = () => {
-      if (!currentVote || (currentVote.choices_yes === 0 && currentVote.choices_no === 0)) {
+  // Вычисление процентов для прогресс-бара (теперь принимает анимированные значения)
+  const calculateProgress = (yesVotes, noVotes) => {
+      const currentYesVotes = yesVotes || 0;
+      const currentNoVotes = noVotes || 0;
+
+      if (currentYesVotes === 0 && currentNoVotes === 0) {
           return { leftPercent: 50, rightPercent: 50, yesVotes: 0, noVotes: 0 };
       }
-      const totalVotes = currentVote.choices_yes + currentVote.choices_no;
-      const leftPercent = (currentVote.choices_no / totalVotes) * 100;
-      const rightPercent = (currentVote.choices_yes / totalVotes) * 100;
+      const totalVotes = currentYesVotes + currentNoVotes;
+      // Напоминание: leftPercent для NO (красная полоса), rightPercent для YES (зеленая полоса)
+      const leftPercent = totalVotes > 0 ? (currentNoVotes / totalVotes) * 100 : 50;
+      const rightPercent = totalVotes > 0 ? (currentYesVotes / totalVotes) * 100 : 50;
       return {
-          leftPercent,
-          rightPercent,
-          yesVotes: currentVote.choices_yes,
-          noVotes: currentVote.choices_no
+          leftPercent,  // Процент для "Против"
+          rightPercent, // Процент для "За"
+          yesVotes: currentYesVotes,
+          noVotes: currentNoVotes
       };
   };
 
-  const progress = calculateProgress();
+  const progress = calculateProgress(animatedYesVotes, animatedNoVotes); // Используем анимированные значения
 
   // Основной JSX
   return (
@@ -448,6 +512,15 @@ export default function VotePage() {
           </div>
       )}
 
+      {/* БЛОК ЗАГЛУШКИ: если не загрузка, нет ошибки, нет текущего голосования и нужно показать заглушку */} 
+      {!isLoading && !error && !currentVote && showPlaceholder && (
+        <section className="content-grid-vote pt-10 pb-20 flex flex-col items-center justify-center min-h-[calc(100vh-300px)]"> {/* Используем flex для центрирования */} 
+            <img src="/images/prepear.png" alt="No active votes available" className="max-w-xs md:max-w-sm lg:max-w-md mb-6" />
+            <p className="text-xl md:text-2xl text-gray-400 text-center">Currently, there are no active or upcoming votes.</p>
+            <p className="text-md text-gray-500 mt-2 text-center">Please check back later!</p>
+        </section>
+      )}
+
       {/* Блок активного голосования (если не загрузка, нет ошибки и есть currentVote) */} 
       {!isLoading && !error && currentVote && (
           <> 
@@ -489,7 +562,7 @@ export default function VotePage() {
                                      <p className="w-2/3 left-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.left_name}</p>
                                     <button 
                                         id="no" 
-                                        onClick={() => handleVote('no')} 
+                                        onClick={(e) => { e.preventDefault(); handleVote('no'); }} 
                                         className={`bg-[#F04438] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
                                             ${(timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
                                         disabled={timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}
@@ -502,7 +575,7 @@ export default function VotePage() {
                                      <p className="w-2/3 right-name text-center mb-2 md:hidden mt-2 break-words max-w-xs">{currentVote.right_name}</p>
                                     <button 
                                         id="yes" 
-                                        onClick={() => handleVote('yes')} 
+                                        onClick={(e) => { e.preventDefault(); handleVote('yes'); }} 
                                         className={`bg-[#039855] py-2.5 px-14 relative max-md:w-2/3 rounded-lg transition-opacity duration-150 
                                             ${(timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`}
                                         disabled={timeLeft <= 0 || (currentVote && currentVote.remaining_votes <= 0) || isSubmittingVote}

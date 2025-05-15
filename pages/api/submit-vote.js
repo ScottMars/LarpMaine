@@ -102,8 +102,35 @@ export default async function handler(req, res) {
             return res.status(500).json({ message: 'Error updating vote count', details: updateCountError.message });
         }
 
-        console.log(`[API Route /api/submit-vote] Vote successfully recorded for ${wallet_address}, vote_id ${vote_id}, choice ${choice}. New total votes: ${userVoteCount + 1}`);
-        return res.status(200).json({ message: 'Vote recorded successfully', new_total_user_votes: userVoteCount + 1, max_votes: MAX_VOTES_PER_USER });
+        // После успешного обновления, получим актуальные данные голосования
+        const { data: updatedVoteData, error: getUpdatedVoteError } = await supabase
+            .from('votes')
+            .select('id, choices_yes, choices_no')
+            .eq('id', vote_id)
+            .single();
+
+        if (getUpdatedVoteError) {
+            console.error('[API Route /api/submit-vote] Supabase error fetching updated vote data (after removing max_votes_per_user from select):', getUpdatedVoteError);
+            // Голос записан, но не можем вернуть свежие данные. Клиент может сделать refetch.
+            return res.status(200).json({ 
+                message: 'Vote recorded, but failed to fetch essential updated counts (yes/no).',
+                new_total_user_votes: userVoteCount + 1, 
+                max_votes: MAX_VOTES_PER_USER 
+            });
+        }
+
+        console.log(`[API Route /api/submit-vote] Vote successfully recorded for ${wallet_address}, vote_id ${vote_id}, choice ${choice}.`);
+        return res.status(200).json({
+            message: 'Vote recorded successfully',
+            updatedVote: {
+                id: updatedVoteData.id,
+                choices_yes: updatedVoteData.choices_yes,
+                choices_no: updatedVoteData.choices_no,
+                user_vote_count: userVoteCount + 1, // Это количество голосов текущего пользователя
+                max_votes_per_user: MAX_VOTES_PER_USER, // Используем константу напрямую
+                remaining_votes: MAX_VOTES_PER_USER - (userVoteCount + 1)
+            }
+        });
 
     } catch (err) {
         console.error('[API Route /api/submit-vote] Internal Server Error in handler:', err);
