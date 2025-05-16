@@ -16,7 +16,7 @@ const Header = () => (
                 </li>
                 <li data-mobile-disable className=""><Link href="/" className="px-1 w-full">Home</Link></li>
                 <li data-mobile-disable className=""><Link href="/rules" className="px-1 w-full">Rules</Link></li>
-                <li data-mobile-disable className=""><Link href="/coming" className="px-1 w-full">Rewards</Link></li>
+                <li data-mobile-disable className=""><Link href="/reward" className="px-1 w-full">Rewards</Link></li>
                 <li data-mobile-disable className=""><Link href="/vote" className="px-1 w-full">Voting</Link></li>
                 <li data-mobile-disable className=""><a target="_blank" rel="noopener noreferrer" className="px-1 w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                 <li data-mobile-disable className=" text-white font-bold"><Link href="/roadmap" className="px-1 w-full">Roadmap</Link></li> {/* Активная ссылка */}
@@ -41,7 +41,7 @@ const DrawerMenu = () => (
             <ul className="divide-y divide-white/10">
                 <li className=""><Link href="/" className="px-1 py-4 block w-full">Home</Link></li>
                 <li className=""><Link href="/rules" className="px-1 py-4 block w-full">Rules</Link></li>
-                <li className=""><Link href="/coming" className="px-1 py-4 block w-full">Rewards</Link></li>
+                <li className=""><Link href="/reward" className="px-1 py-4 block w-full">Rewards</Link></li>
                 <li className=""><Link href="/vote" className="px-1 py-4 block w-full">Voting</Link></li>
                 <li className=""><a target="_blank" rel="noopener noreferrer" className="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                 <li className=" text-white font-bold"><Link href="/roadmap" className="px-1 py-4 block w-full">Roadmap</Link></li> {/* Активная ссылка */}

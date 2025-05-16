@@ -50,7 +50,7 @@ function Header({ isDrawerOpen, setDrawerOpen }) {
                             <Link href="/rules" className="px-1 w-full">Rules</Link>
                         </li>
                         <li data-mobile-disable className="hidden md:block">
-                            <Link href="/coming" className="px-1 w-full">Rewards</Link>
+                            <Link href="/reward" className="px-1 w-full">Rewards</Link>
                         </li>
                         <li data-mobile-disable className="hidden md:block">
                             <Link href="/vote" className="px-1 w-full">Voting</Link>
@@ -119,7 +119,7 @@ function DrawerMenu({ isOpen, onClose }) {
                 <ul className="divide-y divide-white/10">
                     <li onClick={onClose}><Link href="/" className="px-1 py-4 block w-full">Home</Link></li>
                     <li onClick={onClose}><Link href="/rules" className="px-1 py-4 block w-full">Rules</Link></li>
-                    <li onClick={onClose}><Link href="/coming" className="px-1 py-4 block w-full">Rewards</Link></li>
+                    <li onClick={onClose}><Link href="/reward" className="px-1 py-4 block w-full">Rewards</Link></li>
                     <li onClick={onClose}><Link href="/vote" className="px-1 py-4 block w-full">Voting</Link></li>
                     <li onClick={onClose}><a target="_blank" rel="noopener noreferrer" className="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                     <li onClick={onClose}><Link href="/roadmap" className="px-1 py-4 block w-full">Roadmap</Link></li>
@@ -471,9 +471,9 @@ export default function HomePage() {
                 <img src="/images/home/welcome.svg" className="w-full left-1/2 -translate-x-1/2 max-md:max-w-[200%] absolute inset-0" alt="Welcome Background" />
                 <div className="relative z-10 pt-20">
                     <img src="/images/memoitica.svg" className="w-72 h-64 object-cover mx-auto" alt="Memeotica Logo"/>
-                    <h1 className="text-5xl md:text-[4.5rem] leading-none text-center font-light">Where Politics<br /> Becomes the Game.</h1>
-                    <p className="text-xl md:text-2xl max-w-xl md:max-w-2xl mx-auto mt-6 text-white/80">
-                        A Web3 strategy game where you compete in a civic arena by making predictions on political outcomes.
+                    <h1 className="text-5xl md:text-[4.5rem] leading-none text-center font-light">Where Politics<br /> Becomes the Game</h1>
+                    <p className="text-xl md:text-2xl max-w-xl md:max-w-2xl mx-auto mt-6 text-white/80 text-center">
+                        A Web3 strategy game where you compete in a civic arena by making predictions on political outcomes
                     </p>
                     {/* Контейнер для кнопок с добавленным отступом сверху */}
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
@@ -505,7 +505,7 @@ export default function HomePage() {
                         </div>
                         <div className="relative z-10">
                             <p className="mt-4 text-2xl md:text-xl">Predict Real-World Politics</p>
-                            <p className="max-md:text-xl mt-3">Forecast elections, laws, and events. Stake $MEMO or card power to play.</p>
+                            <p className="max-md:text-xl mt-3">Forecast elections, laws, and events. Stake $MEMO or card power to play</p>
                             <Link href="/vote" className="w-fit font-semibold text-sm py-2.5 px-5 bg-white text-[#6938EF] rounded-lg mx-auto block mt-6">
                                 Start Voting
                             </Link>
@@ -519,8 +519,8 @@ export default function HomePage() {
                         </div>
                         <div className="relative z-10">
                             <p className="mt-4 text-2xl md:text-xl">Strategic Card Gameplay</p>
-                            <p className="max-md:text-xl mt-3">Use unique character cards to boost predictions and gain an edge.</p>
-                            <Link href="/coming" className="w-fit font-semibold text-sm py-2.5 px-5 bg-white text-[#6938EF] rounded-lg mx-auto block mt-6">
+                            <p className="max-md:text-xl mt-3">Use unique character cards to boost predictions and gain an edge</p>
+                            <Link href="/reward" className="w-fit font-semibold text-sm py-2.5 px-5 bg-white text-[#6938EF] rounded-lg mx-auto block mt-6">
                                 View cards
                             </Link>
                         </div>
@@ -533,8 +533,8 @@ export default function HomePage() {
                         </div>
                         <div className="relative z-10">
                             <p className="mt-4 text-2xl md:text-xl">Earn $MEMO & Rewards</p>
-                            <p className="max-md:text-xl mt-3">Win tokens, rare NFTs, and climb the leaderboard for glory.</p>
-                            <Link href="/coming" className="w-fit font-semibold text-sm py-2.5 px-5 bg-white text-[#6938EF] rounded-lg mx-auto block mt-6">
+                            <p className="max-md:text-xl mt-3">Win tokens, rare NFTs, and climb the leaderboard for glory</p>
+                            <Link href="/reward" className="w-fit font-semibold text-sm py-2.5 px-5 bg-white text-[#6938EF] rounded-lg mx-auto block mt-6">
                                 Learn More
                             </Link>
                         </div>

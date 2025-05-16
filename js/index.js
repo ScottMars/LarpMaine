@@ -79,10 +79,13 @@ function updateUI(data) {
     // Также здесь нужно обрабатывать состояние голосования (активно, завершено)
     console.log("Обновление UI данными:", data);
 
-    // Пример простой установки заголовка (замените на реальную логику)
-    const titleElement = document.querySelector('h1'); // Найдите ваш элемент заголовка
-    if (titleElement) {
-        titleElement.textContent = data.title || 'Голосование';
+    // Не изменяем заголовок на странице правил
+    if (!window.location.pathname.includes('rules')) {
+        // Пример простой установки заголовка (замените на реальную логику)
+        const titleElement = document.querySelector('h1'); // Найдите ваш элемент заголовка
+        if (titleElement) {
+            titleElement.textContent = data.title || 'Голосование';
+        }
     }
     // Добавьте код для обновления остальных частей интерфейса...
 }
@@ -106,7 +109,17 @@ function displayError() {
 // --- Начальная загрузка ---
 // Запускаем получение первого голосования после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
-    fetchVoteData();
+    // Проверяем, находимся ли мы на странице правил
+    if (window.location.pathname.includes('rules')) {
+        // На странице правил устанавливаем заголовок "Rules" и не запрашиваем данные
+        const titleElement = document.querySelector('h1');
+        if (titleElement) {
+            titleElement.textContent = 'Rules';
+        }
+    } else {
+        // На других страницах запрашиваем данные как обычно
+        fetchVoteData();
+    }
 });
 
 export function setCookie(name, value, days = 100) {

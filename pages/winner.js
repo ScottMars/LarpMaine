@@ -18,7 +18,7 @@ const Header = ({ onMenuOpen }) => (
                 {/* Пункты меню для десктопа */}
                 <li data-mobile-disable className=""><Link href="/" className="px-1 w-full">Home</Link></li>
                 <li data-mobile-disable className=""><Link href="/rules" className="px-1 w-full">Rules</Link></li>
-                <li data-mobile-disable className=""><Link href="/coming" className="px-1 w-full">Rewards</Link></li>
+                <li data-mobile-disable className=""><Link href="/reward" className="px-1 w-full">Rewards</Link></li>
                 <li data-mobile-disable className=""><Link href="/vote" className="px-1 w-full">Voting</Link></li>
                 <li data-mobile-disable className=""><a target="_blank" rel="noopener noreferrer" className="px-1 w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                 <li data-mobile-disable className=""><Link href="/roadmap" className="px-1 w-full">Roadmap</Link></li>
@@ -55,7 +55,7 @@ const DrawerMenu = ({ isOpen, onClose }) => (
                 {/* Пункты меню для мобильных */}
                 <li className=""><Link href="/" className="px-1 py-4 block w-full">Home</Link></li>
                 <li className=""><Link href="/rules" className="px-1 py-4 block w-full">Rules</Link></li>
-                <li className=""><Link href="/coming" className="px-1 py-4 block w-full">Rewards</Link></li>
+                <li className=""><Link href="/reward" className="px-1 py-4 block w-full">Rewards</Link></li>
                 <li className=""><Link href="/vote" className="px-1 py-4 block w-full">Voting</Link></li>
                 <li className=""><a target="_blank" rel="noopener noreferrer" className="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                 <li className=""><Link href="/roadmap" className="px-1 py-4 block w-full">Roadmap</Link></li>
@@ -79,19 +79,10 @@ const Footer = () => (
     </footer>
 );
 
-function formatTime(seconds) {
-    if (isNaN(seconds) || seconds < 0) return '00:00:00';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-}
-
 export default function WinnerPage() {
     const [voteData, setVoteData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [countdown, setCountdown] = useState('');
     const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Состояние для меню
     const router = useRouter();
     const { voteId } = router.query;
@@ -148,31 +139,25 @@ export default function WinnerPage() {
         fetchVoteById();
     }, [router.isReady, voteId]);
 
-    // Эффект для таймера обратного отсчета до display_until_date
+    // Эффект для перенаправления после display_until_date
     useEffect(() => {
         if (!voteData) return;
 
         const displayUntilDate = new Date(voteData.display_until_date);
-        let intervalId;
-
-        const updateCountdown = () => {
-            const now = new Date();
-            const remainingSeconds = Math.floor((displayUntilDate - now) / 1000);
-
-            if (remainingSeconds > 0) {
-                setCountdown(formatTime(remainingSeconds));
-            } else {
-                setCountdown('00:00:00');
-                clearInterval(intervalId);
-                console.log("WinnerPage: Display time ended, redirecting to /vote");
-                router.push('/vote'); // Перенаправление на страницу голосования (или главную)
-            }
-        };
-
-        updateCountdown();
-        intervalId = setInterval(updateCountdown, 1000);
-
-        return () => clearInterval(intervalId);
+        const now = new Date();
+        
+        if (now >= displayUntilDate) {
+            console.log("WinnerPage: Display time ended, redirecting to /vote");
+            router.push('/vote');
+            return;
+        }
+        
+        const timeoutId = setTimeout(() => {
+            console.log("WinnerPage: Display time ended, redirecting to /vote");
+            router.push('/vote');
+        }, displayUntilDate - now);
+        
+        return () => clearTimeout(timeoutId);
     }, [voteData, router]);
 
     // Определение данных победителя на основе voteData
@@ -253,8 +238,7 @@ export default function WinnerPage() {
                             </button>
                         </div>
                         <div className="flex flex-col items-center mt-12 mb-16"> {/* Добавляем mt-12 */}
-                            <p className="text-3xl font-medium" id="countdown">{countdown}</p>
-                            <p className="mt-1 text-gray-300">Until the next vote</p>
+                            <p className="text-3xl font-medium">Next voting is coming soon</p>
                         </div>
                     </>
                 )}

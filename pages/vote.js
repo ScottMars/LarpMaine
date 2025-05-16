@@ -27,7 +27,7 @@ function Header({ isDrawerOpen, setDrawerOpen }) {
                         </li>
                         <li data-mobile-disable className="hidden md:block"><Link href="/" className="px-1 w-full">Home</Link></li>
                         <li data-mobile-disable className="hidden md:block"><Link href="/rules" className="px-1 w-full">Rules</Link></li>
-                        <li data-mobile-disable className="hidden md:block"><Link href="/coming" className="px-1 w-full">Rewards</Link></li>
+                        <li data-mobile-disable className="hidden md:block"><Link href="/reward" className="px-1 w-full">Rewards</Link></li>
                         <li data-mobile-disable className="hidden md:block"><Link href="/vote" className="px-1 w-full">Voting</Link></li>
                         <li data-mobile-disable className="hidden md:block"><a target="_blank" rel="noopener noreferrer" className="px-1 w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                         <li data-mobile-disable className="hidden md:block"><Link href="/roadmap" className="px-1 w-full">Roadmap</Link></li>
@@ -70,8 +70,8 @@ function DrawerMenu({ isOpen, onClose }) {
                 <ul className="divide-y divide-white/10">
                     <li onClick={onClose}><Link href="/" className="px-1 py-4 block w-full">Home</Link></li>
                     <li onClick={onClose}><Link href="/rules" className="px-1 py-4 block w-full">Rules</Link></li>
-                    <li onClick={onClose}><Link href="/coming" className="px-1 py-4 block w-full">Rewards</Link></li>
-                    <li onClick={onClose}><Link href="/vote" className="px-1 py-4 block w-full">Voting</Link></li>
+                    <li onClick={onClose}><Link href="/reward" className="px-1 py-4 block w-full">Rewards</Link></li>
+                    <li onClick={onClose} className="text-white font-bold"><Link href="/vote" className="px-1 py-4 block w-full">Voting</Link></li>
                     <li onClick={onClose}><a target="_blank" rel="noopener noreferrer" className="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                     <li onClick={onClose}><Link href="/roadmap" className="px-1 py-4 block w-full">Roadmap</Link></li>
                     <li onClick={onClose}><Link href="/leaderboard" className="px-1 py-4 block w-full">Leaderboard</Link></li>

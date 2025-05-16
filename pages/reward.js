@@ -15,7 +15,7 @@ const Header = () => (
                 </li>
                 <li data-mobile-disable className=""><Link href="/" className="px-1 w-full">Home</Link></li>
                 <li data-mobile-disable className=""><Link href="/rules" className="px-1 w-full">Rules</Link></li>
-                <li data-mobile-disable className=" text-white font-bold"><Link href="/coming" className="px-1 w-full">Rewards</Link></li> {/* Активная ссылка */}
+                <li data-mobile-disable className=" text-white font-bold"><Link href="/reward" className="px-1 w-full">Rewards</Link></li> {/* Активная ссылка */}
                 <li data-mobile-disable className=""><Link href="/vote" className="px-1 w-full">Voting</Link></li>
                 <li data-mobile-disable className=""><a target="_blank" rel="noopener noreferrer" className="px-1 w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                 <li data-mobile-disable className=""><Link href="/roadmap" className="px-1 w-full">Roadmap</Link></li>
@@ -40,7 +40,7 @@ const DrawerMenu = () => (
             <ul className="divide-y divide-white/10">
                 <li className=""><Link href="/" className="px-1 py-4 block w-full">Home</Link></li>
                 <li className=""><Link href="/rules" className="px-1 py-4 block w-full">Rules</Link></li>
-                <li className=" text-white font-bold"><Link href="/coming" className="px-1 py-4 block w-full">Rewards</Link></li> {/* Активная ссылка */}
+                <li className=" text-white font-bold"><Link href="/reward" className="px-1 py-4 block w-full">Rewards</Link></li> {/* Активная ссылка */}
                 <li className=""><Link href="/vote" className="px-1 py-4 block w-full">Voting</Link></li>
                 <li className=""><a target="_blank" rel="noopener noreferrer" className="px-1 py-4 block w-full" href="https://memeotica.gitbook.io/memoticfun">Whitepaper</a></li>
                 <li className=""><Link href="/roadmap" className="px-1 py-4 block w-full">Roadmap</Link></li>
@@ -63,11 +63,11 @@ const Footer = () => (
     </footer>
 );
 
-export default function ComingPage() {
+export default function RewardPage() {
     return (
         <>
             <Head>
-                <title>Coming Soon - Memeotica</title>
+                <title>Rewards - Memeotica</title>
                 <link rel="icon" type="image/png" href="/images/Favicon memeotica.png" />
                 {/* css/index.css и css/home.css подключены глобально в _document.js */}
                 {/* Если для этой страницы нужны специфичные стили, которых нет в home.css, их можно добавить тут */}
@@ -80,7 +80,7 @@ export default function ComingPage() {
                 <section>
                     <div className="h-[calc(100vh-16rem)] flex justify-center relative items-center">
                         {/* Путь к изображению исправлен */}
-                        <img className="md:w-[32rem] md:h-[32rem] w-80 h-80 relative z-10" src="/images/coming/coming.svg" alt="Coming Soon" />
+                        <img className="md:w-auto md:h-[32rem] w-auto h-80 object-contain relative z-10" src="/images/Reward copy.png" alt="Rewards" />
                         <div className="absolute w-56 h-56 left-1/2 blur-[10rem] bg-[#FF9D00]"></div>
                         <div className="absolute w-56 h-56 right-1/2 blur-[10rem] bg-[#A001E7]"></div>
                     </div>
