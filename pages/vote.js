@@ -196,7 +196,7 @@ export default function VotePage() {
 
                       // Если НЕ удалось перенаправить на победителя (или время отображения истекло), показываем "Голосование еще не началось"
                       console.log("VotePage: No last vote results (or display time expired), or error fetching them. Displaying 'Upcoming vote' message as per /api/next-vote.");
-                      setError("Voting has not started yet.");
+                      setError("The Voting Opens on 26/05 at 17:00 (UTC+3)");
                       setCurrentVote(null); // Нет текущего активного, т.к. показываем сообщение о предстоящем
                       setIsLoading(false); // Устанавливаем isLoading в false, т.к. это конечная точка для этой ветки
                       return; // Выходим, показывая сообщение о предстоящем
@@ -488,10 +488,10 @@ export default function VotePage() {
       
       {/* Блок ошибки (если не загрузка и есть ошибка) */} 
       {!isLoading && error && (
-          <div className="content text-center py-10 text-red-500">
-              <h1>Error</h1>
-              <p>{error}</p>
-              <Link href="/" className="text-blue-500 underline mt-4 inline-block">Back to Home</Link>
+          <div className="content text-center py-10">
+              <img src="/images/prepear.png" alt="Prepare for voting" className="mx-auto mb-6 max-w-xs md:max-w-sm lg:max-w-md" />
+              <p className="text-xl md:text-2xl text-gray-400">{error}</p>
+              <Link href="/" className="text-blue-400 hover:text-blue-300 mt-4 inline-block">Back to Home</Link>
           </div>
       )}
 
